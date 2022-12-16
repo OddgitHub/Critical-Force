@@ -1,0 +1,1 @@
+pyside6-uic MeasurementGui.ui -o MeasurementGui.py
