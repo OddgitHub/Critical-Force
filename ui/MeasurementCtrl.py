@@ -5,6 +5,18 @@ from ui.MeasurementGui import Ui_Form
 from util.repeatedTimer import RepeatedTimer
 from util.params import Params
 from playsound import playsound
+import numpy as np
+import os
+
+# Set environment variable for MCP2221A
+try:
+    os.environ['BLINKA_MCP2221']
+except:
+    # set BLINKA_MCP2221=1
+    os.environ['BLINKA_MCP2221']='1'
+
+import board
+from analogio import AnalogIn
 
 from workout_config.workouts import WorkoutHandler
 
@@ -15,6 +27,11 @@ class MeasurementCtrl(QWidget):
         form = Ui_Form()
         form.setupUi(self)
 
+
+
+        # Get access to the ADC
+        self.adc = AnalogIn(board.G1)
+
         #========================================
         # Init class member variables
         #========================================   
@@ -22,8 +39,9 @@ class MeasurementCtrl(QWidget):
         self.running = False
         self.lookupTable = 0
         self.countdown = 0
+        self.measData = 0
         self.numMeasSamples = 0
-        self.mesCnt = 0
+        self.measCnt = 0
         self.secCnt = 0
 
         #========================================
@@ -62,6 +80,7 @@ class MeasurementCtrl(QWidget):
         if not self.running:
             self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
             self.numMeasSamples = len(self.lookupTable) * self.fsSensor
+            self.measData = np.zeros(self.numMeasSamples)
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
             self.measurementTimer = RepeatedTimer(1/self.fsSensor, self.onMeasurementCallback)
@@ -70,7 +89,7 @@ class MeasurementCtrl(QWidget):
     def onStopMeasurement(self):
         if self.running:
             self.measurementTimer.stop()
-            self.mesCnt = 0
+            self.measCnt = 0
             self.secCnt = 0
             self.timerLabel.setText('Stopped')
             self.timerLabel.setStyleSheet("background-color: none")
@@ -88,8 +107,13 @@ class MeasurementCtrl(QWidget):
     def onMeasurementCallback(self):
         secCnt = self.secCnt
 
+        # Read ADC value and save it to array
+        raw = self.adc.value
+        self.measData[self.measCnt] = self.getVoltage(raw)
+        print(str(self.measData[self.measCnt])) # TODO
+
         # Workout timer handling
-        if self.mesCnt % self.fsSensor == 0:
+        if self.measCnt % self.fsSensor == 0:
             if self.lookupTable[secCnt] == 1:
                 self.timerLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork')
                 self.timerLabel.setStyleSheet("background-color: red")
@@ -99,15 +123,19 @@ class MeasurementCtrl(QWidget):
 
             if secCnt > 0:
                 if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
-                    # TODO: Move playsound to separate thread
+                    # TODO: Move playsound to separate thread!
                     playsound(Params.fileClickHi.value)
                 elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
-                    # TODO: Move playsound to separate thread
+                    # TODO: Move playsound to separate thread!
                     playsound(Params.fileClickLo.value)
 
             self.secCnt += 1 	# Increase timer counter
-        self.mesCnt += 1		# Increase measurement counter
+        self.measCnt += 1		# Increase measurement counter
 
         # Measurement finished
-        if self.mesCnt == self.numMeasSamples:
+        if self.measCnt == self.numMeasSamples:
             self.measFinished.trigger()
+
+    @staticmethod
+    def getVoltage(raw):
+        return (raw * 3.3) / 65536
