@@ -58,13 +58,7 @@ class WorkoutHandler:
 			lookupTable[startPause + i*(setDur + setPause):startPause + i*(setDur + setPause) + setDur] = repPattern
 			countdown[startPause + i*(setDur + setPause):startPause + i*(setDur + setPause) + setDur + setPause] = cntPattern
 
-		#==================================
-		# Create look-up table for countin
-		# TODO: This can be replaced by the countdown and is no longer necessary
-		countin = np.roll(lookupTable, -cntInDur)
-		countin = np.maximum(countin - lookupTable, 0)
-
-		return lookupTable, countdown, countin
+		return lookupTable, countdown
 
 	def getTotalSetDuration(self, workoutID):
 		selectedWorkout = self.allWorkouts[workoutID]

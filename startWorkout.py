@@ -1,4 +1,4 @@
-from repeatedTimer import RepeatedTimer
+from util.repeatedTimer import RepeatedTimer
 from workout_config.workouts import WorkoutHandler
 import time, csv, random
 import numpy as np
