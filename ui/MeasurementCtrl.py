@@ -8,6 +8,9 @@ from playsound import playsound
 import numpy as np
 import os
 
+from threading import Thread
+from threading import Event
+
 # Set environment variable for MCP2221A
 try:
     os.environ['BLINKA_MCP2221']
@@ -26,8 +29,6 @@ class MeasurementCtrl(QWidget):
 
         form = Ui_Form()
         form.setupUi(self)
-
-
 
         # Get access to the ADC
         self.adc = AnalogIn(board.G1)
@@ -76,6 +77,24 @@ class MeasurementCtrl(QWidget):
         self.measFinished = QAction("Finished", self)
         self.measFinished.triggered.connect(self.onStopMeasurement)
 
+        #========================================
+        # Audio handling
+        #========================================
+        self.stopAudioThreadEvent = Event()
+        self.playSndHiEvent = Event()
+        self.playSndLoEvent = Event()
+
+    def onAudioPlayback(self, stopEvent, playHi, playLo):
+        while(True):
+            if stopEvent.is_set():
+                break
+            if playHi.is_set():
+                playHi.clear()
+                playsound(Params.fileClickHi.value)
+            if playLo.is_set():
+                playLo.clear()
+                playsound(Params.fileClickLo.value)
+
     def onStartMeasurement(self):
         if not self.running:
             self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
@@ -83,12 +102,17 @@ class MeasurementCtrl(QWidget):
             self.measData = np.zeros(self.numMeasSamples)
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
+            self.stopAudioThreadEvent.clear()
+            self.audioThread = Thread(target=self.onAudioPlayback, args=(self.stopAudioThreadEvent, self.playSndHiEvent, self.playSndLoEvent))
+            self.audioThread.start()
             self.measurementTimer = RepeatedTimer(1/self.fsSensor, self.onMeasurementCallback)
             self.running = True
 
     def onStopMeasurement(self):
         if self.running:
             self.measurementTimer.stop()
+            self.stopAudioThreadEvent.set()
+            self.audioThread.join()
             self.measCnt = 0
             self.secCnt = 0
             self.timerLabel.setText('Stopped')
@@ -123,11 +147,9 @@ class MeasurementCtrl(QWidget):
 
             if secCnt > 0:
                 if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
-                    # TODO: Move playsound to separate thread!
-                    playsound(Params.fileClickHi.value)
+                    self.playSndHiEvent.set()
                 elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
-                    # TODO: Move playsound to separate thread!
-                    playsound(Params.fileClickLo.value)
+                    self.playSndLoEvent.set()
 
             self.secCnt += 1 	# Increase timer counter
         self.measCnt += 1		# Increase measurement counter
