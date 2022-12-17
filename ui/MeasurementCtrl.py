@@ -87,6 +87,7 @@ class MeasurementCtrl(QWidget):
     def onAudioPlayback(self, stopEvent, playHi, playLo):
         while(True):
             if stopEvent.is_set():
+                stopEvent.clear()
                 break
             if playHi.is_set():
                 playHi.clear()
@@ -102,7 +103,6 @@ class MeasurementCtrl(QWidget):
             self.measData = np.zeros(self.numMeasSamples)
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
-            self.stopAudioThreadEvent.clear()
             self.audioThread = Thread(target=self.onAudioPlayback, args=(self.stopAudioThreadEvent, self.playSndHiEvent, self.playSndLoEvent))
             self.audioThread.start()
             self.measurementTimer = RepeatedTimer(1/self.fsSensor, self.onMeasurementCallback)
