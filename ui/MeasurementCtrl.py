@@ -57,7 +57,9 @@ class MeasurementCtrl(QWidget):
         #========================================     
         self.workoutDescriptionLabel = form.workoutDescriptionLabel
         self.timerLabel = form.timerLabel
+        self.weightLabel = form.weightLabel
         self.weightSpinBox = form.bodyWeightSpinBox
+        self.graphicsView = form.graphicsView
 
         #========================================
         # Workout handling
@@ -121,6 +123,8 @@ class MeasurementCtrl(QWidget):
             self.weightSpinBox.setEnabled(True)
             self.running = False
 
+            self.plotResult(self.measData)
+
     def onTaraButtonClicked(self):
         print("Tara button clicked.")
 
@@ -133,8 +137,9 @@ class MeasurementCtrl(QWidget):
 
         # Read ADC value and save it to array
         raw = self.adc.value
-        self.measData[self.measCnt] = self.getVoltage(raw)
-        print(str(self.measData[self.measCnt])) # TODO
+        # TODO: Conversion can be done outside!
+        self.measData[self.measCnt] = self.getVoltage(raw) 
+        self.weightLabel.setText(str(self.measData[self.measCnt]) + 'kg')
 
         # Workout timer handling
         if self.measCnt % self.fsSensor == 0:
@@ -157,6 +162,9 @@ class MeasurementCtrl(QWidget):
         # Measurement finished
         if self.measCnt == self.numMeasSamples:
             self.measFinished.trigger()
+
+    def plotResult(self, data):
+        self.graphicsView.plot(data)
 
     @staticmethod
     def getVoltage(raw):

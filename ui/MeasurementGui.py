@@ -17,7 +17,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFrame,
     QHBoxLayout, QLabel, QLayout, QPushButton,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+    QSizePolicy, QVBoxLayout, QWidget)
+
+from pyqtgraph import PlotWidget
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -131,15 +133,10 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.line_4)
 
-        self.placeholderLabel = QLabel(Form)
-        self.placeholderLabel.setObjectName(u"placeholderLabel")
-        self.placeholderLabel.setMinimumSize(QSize(0, 200))
+        self.graphicsView = PlotWidget(Form)
+        self.graphicsView.setObjectName(u"graphicsView")
 
-        self.verticalLayout.addWidget(self.placeholderLabel)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout.addItem(self.verticalSpacer)
+        self.verticalLayout.addWidget(self.graphicsView)
 
 
         self.retranslateUi(Form)
@@ -157,6 +154,5 @@ class Ui_Form(object):
         self.timerLabel.setText(QCoreApplication.translate("Form", u"Stopped", None))
         self.weightLabel.setText(QCoreApplication.translate("Form", u"0kg", None))
         self.taraButton.setText(QCoreApplication.translate("Form", u"Tara", None))
-        self.placeholderLabel.setText(QCoreApplication.translate("Form", u"Placeholder for plot...", None))
     # retranslateUi
 

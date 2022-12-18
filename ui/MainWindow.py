@@ -31,8 +31,8 @@ class MainWindow(QMainWindow):
         tabs.setMovable(False)
         
         # Measurement page
-        measTab = MeasurementCtrl()
-        tabs.addTab(measTab, "Measurement")
+        self.measTab = MeasurementCtrl()
+        tabs.addTab(self.measTab, "Measurement")
 
         # Personal data page
         dataTab = DataGui()
@@ -47,7 +47,11 @@ class MainWindow(QMainWindow):
         file_menu = menu.addMenu("&File")
         file_menu.addAction(saveAction)
 
-
     # Callbacks
     def onSaveActionClicked(self):
         print('Save Action Triggered')
+
+    def closeEvent(self, event):
+        self.measTab.onStopMeasurement()
+        event.accept()
+        # event.ignore()
