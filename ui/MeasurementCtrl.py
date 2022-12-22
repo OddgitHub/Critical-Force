@@ -34,7 +34,7 @@ class MeasurementCtrl(QWidget):
         self.adc = AnalogIn(board.G1)
 
         #========================================
-        # Init class member variables
+        # Init class members
         #========================================   
         self.fsMeas = Params.fsMeasurement.value
         self.running = False
@@ -56,6 +56,10 @@ class MeasurementCtrl(QWidget):
         form.stopButton.pressed.connect(self.onStopMeasurement)
         form.tareButton.pressed.connect(self.onTareButtonClicked)
         form.bodyWeightSpinBox.valueChanged.connect(self.onBodyWeightChanged)
+
+        # Action, triggered when measurement is finished
+        self.measFinished = QAction("Finished", self)
+        self.measFinished.triggered.connect(self.onStopMeasurement)
 
         #========================================
         # Make some gui elements class members   
@@ -79,10 +83,6 @@ class MeasurementCtrl(QWidget):
 
         for workout in self.workouts:
             self.workoutComboBox.addItem(workout['Name'])
-
-        # Action, triggered when measurement is finished
-        self.measFinished = QAction("Finished", self)
-        self.measFinished.triggered.connect(self.onStopMeasurement)
 
         #========================================
         # Audio handling
@@ -151,30 +151,33 @@ class MeasurementCtrl(QWidget):
     def onMeasurementCallback(self):
         secCnt = self.secCnt
 
-        # Read ADC value and save it to array
-        self.rawMeasData[self.measCnt] = self.adc.value
-
-        # Workout timer handling
-        if self.measCnt % self.fsMeas == 0:
-            if self.lookupTable[secCnt] == 1:
-                self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork')
-                self.workoutLabel.setStyleSheet("background-color: red")
-            else:
-                self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nPause')
-                self.workoutLabel.setStyleSheet("background-color: lightgreen")
-
-            if secCnt > 0:
-                if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
-                    self.playSndHiEvent.set()
-                elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
-                    self.playSndLoEvent.set()
-
-            self.secCnt += 1 	# Increase timer counter
-        self.measCnt += 1		# Increase measurement counter
-
-        # Measurement finished
-        if self.measCnt == self.numMeasSamples:
+        if self.measCnt >= self.numMeasSamples:
+            # Measurement finished
             self.measFinished.trigger()
+        else:
+            # Read ADC value and save it to array
+            self.rawMeasData[self.measCnt] = self.adc.value
+
+            # Workout timer handling
+            if self.measCnt % self.fsMeas == 0:
+                if self.lookupTable[secCnt] == 1:
+                    self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork')
+                    self.workoutLabel.setStyleSheet("background-color: red")
+                else:
+                    self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nPause')
+                    self.workoutLabel.setStyleSheet("background-color: lightgreen")
+
+                if secCnt > 0:
+                    if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
+                        self.playSndHiEvent.set()
+                    elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
+                        self.playSndLoEvent.set()
+
+                # Increase timer counter
+                self.secCnt += 1
+
+            # Increase measurement counter
+            self.measCnt += 1		
 
     def onTareVisualization(self):
         self.currentWeight = self.convertAdcValueToWeight(self.adc.value)
