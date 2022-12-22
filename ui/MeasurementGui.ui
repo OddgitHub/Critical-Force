@@ -37,6 +37,18 @@
        <property name="suffix">
         <string>kg</string>
        </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="minimum">
+        <double>40.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>200.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>70.000000000000000</double>
+       </property>
       </widget>
      </item>
     </layout>
@@ -83,7 +95,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="timerLabel">
+      <widget class="QLabel" name="workoutLabel">
        <property name="minimumSize">
         <size>
          <width>70</width>
@@ -116,7 +128,7 @@
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <item>
-        <widget class="QLabel" name="weightLabel">
+        <widget class="QLabel" name="tareLabel">
          <property name="minimumSize">
           <size>
            <width>70</width>
@@ -137,7 +149,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="taraButton">
+        <widget class="QPushButton" name="tareButton">
          <property name="minimumSize">
           <size>
            <width>70</width>
@@ -145,7 +157,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Tara</string>
+          <string>Tare</string>
          </property>
         </widget>
        </item>

@@ -36,39 +36,44 @@ class MeasurementCtrl(QWidget):
         #========================================
         # Init class member variables
         #========================================   
-        self.fsSensor = Params.fsSensor.value
+        self.fsMeas = Params.fsMeasurement.value
         self.running = False
         self.lookupTable = 0
         self.countdown = 0
-        self.measData = 0
+        self.rawMeasData = []
+        self.measDataPercentBW = []
         self.numMeasSamples = 0
         self.measCnt = 0
         self.secCnt = 0
+        self.currentWeight = 0
+        self.tare = 0
+        self.bodyWeight = form.bodyWeightSpinBox.value()
 
         #========================================
         # Connect signals
         #========================================     
         form.startButton.pressed.connect(self.onStartMeasurement)
         form.stopButton.pressed.connect(self.onStopMeasurement)
-        form.taraButton.pressed.connect(self.onTaraButtonClicked)
+        form.tareButton.pressed.connect(self.onTareButtonClicked)
+        form.bodyWeightSpinBox.valueChanged.connect(self.onBodyWeightChanged)
 
         #========================================
         # Make some gui elements class members   
         #========================================     
         self.workoutDescriptionLabel = form.workoutDescriptionLabel
-        self.timerLabel = form.timerLabel
-        self.weightLabel = form.weightLabel
+        self.workoutLabel = form.workoutLabel
         self.weightSpinBox = form.bodyWeightSpinBox
         self.graphicsView = form.graphicsView
+        self.tareButton = form.tareButton
+        self.tareLabel = form.tareLabel
 
         #========================================
         # Workout handling
         #========================================
+        self.selectedWorkoutId = 0
         self.workoutComboBox = form.workoutComboBox
         self.workoutComboBox.currentIndexChanged.connect( self.onWorkoutChanged )
-        self.selectedWorkoutId = 0
 
-        #workoutCfgPath = ('./workout_config/workouts.csv')
         self.workoutHandler = WorkoutHandler(Params.workoutCfgPath.value)
         self.workouts = self.workoutHandler.getAllWorkouts()
 
@@ -86,6 +91,12 @@ class MeasurementCtrl(QWidget):
         self.playSndHiEvent = Event()
         self.playSndLoEvent = Event()
 
+        # Start a timer that is only used for the tare display
+        self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
+
+    #========================================
+    # Callback functions
+    #========================================
     def onAudioPlayback(self, stopEvent, playHi, playLo):
         while(True):
             if stopEvent.is_set():
@@ -100,55 +111,57 @@ class MeasurementCtrl(QWidget):
 
     def onStartMeasurement(self):
         if not self.running:
+            self.tareTimer.stop()
             self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
-            self.numMeasSamples = len(self.lookupTable) * self.fsSensor
-            self.measData = np.zeros(self.numMeasSamples)
+            self.numMeasSamples = len(self.lookupTable) * self.fsMeas
+            self.rawMeasData = np.zeros(self.numMeasSamples)
+
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
+            self.tareButton.setEnabled(False)
+            self.tareLabel.setEnabled(False)
+
             self.audioThread = Thread(target=self.onAudioPlayback, args=(self.stopAudioThreadEvent, self.playSndHiEvent, self.playSndLoEvent))
             self.audioThread.start()
-            self.measurementTimer = RepeatedTimer(1/self.fsSensor, self.onMeasurementCallback)
+            self.measurementTimer = RepeatedTimer(1/self.fsMeas, self.onMeasurementCallback)
             self.running = True
 
     def onStopMeasurement(self):
+        self.tareTimer.stop()
         if self.running:
             self.measurementTimer.stop()
             self.stopAudioThreadEvent.set()
             self.audioThread.join()
-            self.measCnt = 0
-            self.secCnt = 0
-            self.timerLabel.setText('Stopped')
-            self.timerLabel.setStyleSheet("background-color: none")
-            self.workoutComboBox.setEnabled(True)
-            self.weightSpinBox.setEnabled(True)
             self.running = False
 
-            self.plotResult(self.measData)
+            self.measCnt = 0
+            self.secCnt = 0
+            self.workoutLabel.setText('Stopped')
+            self.workoutLabel.setStyleSheet("background-color: none")
+            
+            self.workoutComboBox.setEnabled(True)
+            self.weightSpinBox.setEnabled(True)
+            self.tareButton.setEnabled(True)
+            self.tareLabel.setEnabled(True)
 
-    def onTaraButtonClicked(self):
-        print("Tara button clicked.")
+            self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
-    def onWorkoutChanged(self, id):
-        self.workoutDescriptionLabel.setText(self.workouts[id]["Description"])
-        self.selectedWorkoutId = id
+            self.computeResultAndPlot(self.rawMeasData)
 
     def onMeasurementCallback(self):
         secCnt = self.secCnt
 
         # Read ADC value and save it to array
-        raw = self.adc.value
-        # TODO: Conversion can be done outside!
-        self.measData[self.measCnt] = self.getVoltage(raw) 
-        self.weightLabel.setText(str(self.measData[self.measCnt]) + 'kg')
+        self.rawMeasData[self.measCnt] = self.adc.value
 
         # Workout timer handling
-        if self.measCnt % self.fsSensor == 0:
+        if self.measCnt % self.fsMeas == 0:
             if self.lookupTable[secCnt] == 1:
-                self.timerLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork')
-                self.timerLabel.setStyleSheet("background-color: red")
+                self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork')
+                self.workoutLabel.setStyleSheet("background-color: red")
             else:
-                self.timerLabel.setText(str(self.countdown[secCnt]) + ' sec\nPause')
-                self.timerLabel.setStyleSheet("background-color: lightgreen")
+                self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nPause')
+                self.workoutLabel.setStyleSheet("background-color: lightgreen")
 
             if secCnt > 0:
                 if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
@@ -163,9 +176,40 @@ class MeasurementCtrl(QWidget):
         if self.measCnt == self.numMeasSamples:
             self.measFinished.trigger()
 
-    def plotResult(self, data):
-        self.graphicsView.plot(data)
+    def onTareVisualization(self):
+        self.currentWeight = self.convertAdcValueToWeight(self.adc.value)
+        weightString = str(np.around(self.currentWeight - self.tare, decimals=2))
+        self.tareLabel.setText(weightString + 'kg')
 
-    @staticmethod
-    def getVoltage(raw):
+    def onTareButtonClicked(self):
+        self.tare = self.currentWeight
+
+    def onWorkoutChanged(self, id):
+        self.workoutDescriptionLabel.setText(self.workouts[id]["Description"])
+        self.selectedWorkoutId = id
+
+    def onBodyWeightChanged(self, value):
+        self.bodyWeight = value
+        if len(self.rawMeasData) > 0:
+            self.computeResultAndPlot(self.rawMeasData)
+
+    #========================================
+    # Helper functions
+    #========================================
+    def getVoltage(self, raw):
         return (raw * 3.3) / 65536
+
+    def convertAdcValueToWeight(self, raw):
+        return self.getVoltage(raw) * -5 # TODO: atm only dummy!!
+
+    def computeResultAndPlot(self, rawData):
+        # Compute result (force as percentage of body weight)...
+        self.measDataPercentBW = (self.convertAdcValueToWeight(rawData) - self.tare) / self.bodyWeight * 100
+
+        # ...and plot
+        t = np.linspace(0, len(self.measDataPercentBW) / self.fsMeas, len(self.measDataPercentBW))
+        self.graphicsView.clear()
+        self.graphicsView.plot(t, self.measDataPercentBW)
+        self.graphicsView.showGrid(x=True, y=True)
+        self.graphicsView.setLabel('left', "% BW")
+        self.graphicsView.setLabel('bottom', "Time [sec]")

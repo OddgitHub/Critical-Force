@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
         # Basic window properties
         #========================================
         self.setWindowTitle("Climbing Trainer")
-        self.setMinimumSize(400, 300)
+        self.setMinimumSize(500, 500)
         self.setStatusBar(QStatusBar(self))
 
         #========================================

@@ -1,7 +1,7 @@
 from enum import Enum
 
 class Params(Enum):
-    fsSensor = 10       # [sec]
+    fsMeasurement = 10       # [Hz]
     workoutCfgPath = ('./workout_config/workouts.csv')
     fileClickHi = ('./raw/clickhi.wav')
     fileClickLo = ('./raw/clicklo.wav')

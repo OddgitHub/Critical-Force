@@ -44,6 +44,10 @@ class Ui_Form(object):
 
         self.bodyWeightSpinBox = QDoubleSpinBox(Form)
         self.bodyWeightSpinBox.setObjectName(u"bodyWeightSpinBox")
+        self.bodyWeightSpinBox.setDecimals(1)
+        self.bodyWeightSpinBox.setMinimum(40.000000000000000)
+        self.bodyWeightSpinBox.setMaximum(200.000000000000000)
+        self.bodyWeightSpinBox.setValue(70.000000000000000)
 
         self.horizontalLayout_2.addWidget(self.bodyWeightSpinBox)
 
@@ -86,15 +90,15 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.line_2)
 
-        self.timerLabel = QLabel(Form)
-        self.timerLabel.setObjectName(u"timerLabel")
-        self.timerLabel.setMinimumSize(QSize(70, 0))
+        self.workoutLabel = QLabel(Form)
+        self.workoutLabel.setObjectName(u"workoutLabel")
+        self.workoutLabel.setMinimumSize(QSize(70, 0))
         font = QFont()
         font.setPointSize(13)
-        self.timerLabel.setFont(font)
-        self.timerLabel.setAlignment(Qt.AlignCenter)
+        self.workoutLabel.setFont(font)
+        self.workoutLabel.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.timerLabel)
+        self.horizontalLayout.addWidget(self.workoutLabel)
 
         self.line = QFrame(Form)
         self.line.setObjectName(u"line")
@@ -106,19 +110,19 @@ class Ui_Form(object):
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.weightLabel = QLabel(Form)
-        self.weightLabel.setObjectName(u"weightLabel")
-        self.weightLabel.setMinimumSize(QSize(70, 0))
-        self.weightLabel.setFont(font)
-        self.weightLabel.setAlignment(Qt.AlignCenter)
+        self.tareLabel = QLabel(Form)
+        self.tareLabel.setObjectName(u"tareLabel")
+        self.tareLabel.setMinimumSize(QSize(70, 0))
+        self.tareLabel.setFont(font)
+        self.tareLabel.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_3.addWidget(self.weightLabel)
+        self.verticalLayout_3.addWidget(self.tareLabel)
 
-        self.taraButton = QPushButton(Form)
-        self.taraButton.setObjectName(u"taraButton")
-        self.taraButton.setMinimumSize(QSize(70, 0))
+        self.tareButton = QPushButton(Form)
+        self.tareButton.setObjectName(u"tareButton")
+        self.tareButton.setMinimumSize(QSize(70, 0))
 
-        self.verticalLayout_3.addWidget(self.taraButton)
+        self.verticalLayout_3.addWidget(self.tareButton)
 
 
         self.horizontalLayout.addLayout(self.verticalLayout_3)
@@ -151,8 +155,8 @@ class Ui_Form(object):
         self.workoutDescriptionLabel.setText(QCoreApplication.translate("Form", u"Please select a workout...", None))
         self.startButton.setText(QCoreApplication.translate("Form", u"Start", None))
         self.stopButton.setText(QCoreApplication.translate("Form", u"Stop", None))
-        self.timerLabel.setText(QCoreApplication.translate("Form", u"Stopped", None))
-        self.weightLabel.setText(QCoreApplication.translate("Form", u"0kg", None))
-        self.taraButton.setText(QCoreApplication.translate("Form", u"Tara", None))
+        self.workoutLabel.setText(QCoreApplication.translate("Form", u"Stopped", None))
+        self.tareLabel.setText(QCoreApplication.translate("Form", u"0kg", None))
+        self.tareButton.setText(QCoreApplication.translate("Form", u"Tare", None))
     # retranslateUi
 
