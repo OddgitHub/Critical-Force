@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>615</width>
+    <height>348</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="nameLabel">
+     <property name="text">
+      <string>Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="nameLineEdit">
+     <property name="placeholderText">
+      <string>Your name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="ageLabel">
+     <property name="text">
+      <string>Age</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QSpinBox" name="ageSpinBox">
+     <property name="suffix">
+      <string/>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="genderLabel">
+     <property name="text">
+      <string>Gender</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="genderComboBox"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="heightLabel">
+     <property name="text">
+      <string>Height</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QSpinBox" name="heightSpinBox">
+     <property name="suffix">
+      <string> cm</string>
+     </property>
+     <property name="maximum">
+      <number>300</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="apeLabel">
+     <property name="text">
+      <string>Ape Index</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QDoubleSpinBox" name="apeSpinBox">
+     <property name="prefix">
+      <string/>
+     </property>
+     <property name="suffix">
+      <string> cm</string>
+     </property>
+     <property name="minimum">
+      <double>-40.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>40.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="routeLabel">
+     <property name="text">
+      <string>Max. Route Grade</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="routeComboBox"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="boulderLabel">
+     <property name="text">
+      <string>Max. Boulder Grade</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QComboBox" name="boulderComboBox"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="mailLabel">
+     <property name="text">
+      <string>Email</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="emailLineEdit">
+     <property name="placeholderText">
+      <string>Your email</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

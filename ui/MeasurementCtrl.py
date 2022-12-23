@@ -41,7 +41,7 @@ class MeasurementCtrl(QWidget):
         self.lookupTable = 0
         self.countdown = 0
         self.rawMeasData = []
-        self.measDataPercentBW = []
+        self.measDataKg = []
         self.numMeasSamples = 0
         self.measCnt = 0
         self.secCnt = 0
@@ -65,6 +65,7 @@ class MeasurementCtrl(QWidget):
         # Make some gui elements class members   
         #========================================     
         self.workoutDescriptionLabel = form.workoutDescriptionLabel
+        self.workoutComboBox = form.workoutComboBox
         self.workoutLabel = form.workoutLabel
         self.weightSpinBox = form.bodyWeightSpinBox
         self.graphicsView = form.graphicsView
@@ -75,7 +76,6 @@ class MeasurementCtrl(QWidget):
         # Workout handling
         #========================================
         self.selectedWorkoutId = 0
-        self.workoutComboBox = form.workoutComboBox
         self.workoutComboBox.currentIndexChanged.connect( self.onWorkoutChanged )
 
         self.workoutHandler = WorkoutHandler(Params.workoutCfgPath.value)
@@ -83,6 +83,8 @@ class MeasurementCtrl(QWidget):
 
         for workout in self.workouts:
             self.workoutComboBox.addItem(workout['Name'])
+        
+        self.workoutName = self.workouts[self.selectedWorkoutId]['Name']
 
         #========================================
         # Audio handling
@@ -138,6 +140,7 @@ class MeasurementCtrl(QWidget):
             self.secCnt = 0
             self.workoutLabel.setText('Stopped')
             self.workoutLabel.setStyleSheet("background-color: none")
+            self.workoutName = self.workouts[self.selectedWorkoutId]['Name']
             
             self.workoutComboBox.setEnabled(True)
             self.weightSpinBox.setEnabled(True)
@@ -146,7 +149,8 @@ class MeasurementCtrl(QWidget):
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
-            self.computeResultAndPlot(self.rawMeasData)
+            self.measDataKg = (self.convertAdcValueToKg(self.rawMeasData) - self.tare)
+            self.computeResultAndPlot()
 
     def onMeasurementCallback(self):
         secCnt = self.secCnt
@@ -180,7 +184,7 @@ class MeasurementCtrl(QWidget):
             self.measCnt += 1		
 
     def onTareVisualization(self):
-        self.currentWeight = self.convertAdcValueToWeight(self.adc.value)
+        self.currentWeight = self.convertAdcValueToKg(self.adc.value)
         weightString = str(np.around(self.currentWeight - self.tare, decimals=2))
         self.tareLabel.setText(weightString + 'kg')
 
@@ -193,8 +197,8 @@ class MeasurementCtrl(QWidget):
 
     def onBodyWeightChanged(self, value):
         self.bodyWeight = value
-        if len(self.rawMeasData) > 0:
-            self.computeResultAndPlot(self.rawMeasData)
+        if len(self.measDataKg) > 0:
+            self.computeResultAndPlot()
 
     #========================================
     # Helper functions
@@ -202,17 +206,35 @@ class MeasurementCtrl(QWidget):
     def getVoltage(self, raw):
         return (raw * 3.3) / 65536
 
-    def convertAdcValueToWeight(self, raw):
+    def convertAdcValueToKg(self, raw):
         return self.getVoltage(raw) * -5 # TODO: atm only dummy!!
 
-    def computeResultAndPlot(self, rawData):
+    def computeResultAndPlot(self):
         # Compute result (force as percentage of body weight)...
-        self.measDataPercentBW = (self.convertAdcValueToWeight(rawData) - self.tare) / self.bodyWeight * 100
+        measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
         # ...and plot
-        t = np.linspace(0, len(self.measDataPercentBW) / self.fsMeas, len(self.measDataPercentBW))
+        t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))
         self.graphicsView.clear()
-        self.graphicsView.plot(t, self.measDataPercentBW)
+        self.graphicsView.plot(t, measDataPercentBw)
         self.graphicsView.showGrid(x=True, y=True)
         self.graphicsView.setLabel('left', "% BW")
         self.graphicsView.setLabel('bottom', "Time [sec]")
+
+    #========================================
+    # Get/set functions
+    #========================================
+    def getData(self):
+        data = {}
+        data['weight'] = self.bodyWeight
+        data['workout'] = self.workoutName
+        data['measDataKg'] = self.measDataKg
+        return data
+
+    def setData(self, data):
+        self.measDataKg = np.asarray(data['measDataKg'])
+        self.weightSpinBox.setValue(data['weight'])
+
+        workoutIndex = next((index for (index, d) in enumerate(self.workouts) if d["Name"] == data['workout']), None)
+        self.workoutComboBox.setCurrentIndex(workoutIndex)
+        self.computeResultAndPlot()
