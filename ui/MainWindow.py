@@ -1,9 +1,10 @@
 
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import QMainWindow, QStatusBar, QTabWidget, QFileDialog, QMessageBox
 from dicttoxml import dicttoxml
 import xmltodict
 from datetime import date
+from util.params import Params
 
 from ui.MeasurementCtrl import MeasurementCtrl
 from ui.DataCtrl import DataCtrl
@@ -15,7 +16,8 @@ class MainWindow(QMainWindow):
         #========================================
         # Basic window properties
         #========================================
-        self.setWindowTitle("Climbing Trainer")
+        self.setWindowTitle(Params.appName.value)
+        self.setWindowIcon(QIcon(Params.appIcon.value))
         self.setMinimumSize(500, 500)
         self.setStatusBar(QStatusBar(self))
 
@@ -70,7 +72,7 @@ class MainWindow(QMainWindow):
         f.write(xml.decode())
         f.close()
 
-        self.setWindowTitle("Climbing Trainer - " + fileName[0])
+        self.setWindowTitle(Params.appName.value + " - " + fileName[0])
 
     def onLoadActionClicked(self):
         fileName = QFileDialog.getOpenFileName(self, "Load Measurement...", "./results", "Training Files (*.xml)")
@@ -105,7 +107,7 @@ class MainWindow(QMainWindow):
             self.dataTab.setData(personalDataDict)
             self.measTab.setData(measurementDataDict)
 
-            self.setWindowTitle("Climbing Trainer - " + fileName[0])
+            self.setWindowTitle(Params.appName.value + " - " + fileName[0])
 
         except KeyError:
             msg = QMessageBox()
@@ -115,6 +117,6 @@ class MainWindow(QMainWindow):
             msg.exec_()
     
     def closeEvent(self, event):
-        self.measTab.onStopMeasurement()
+        self.measTab.onStopMeasurement(closeApp=True)
         event.accept()
         # event.ignore()

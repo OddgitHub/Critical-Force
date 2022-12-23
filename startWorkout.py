@@ -1,5 +1,5 @@
 from util.repeatedTimer import RepeatedTimer
-from workout_config.workouts import WorkoutHandler
+from util.workouts import WorkoutHandler
 import time, csv, random
 import numpy as np
 import matplotlib.pyplot as plt

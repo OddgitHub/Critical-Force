@@ -5,6 +5,7 @@ from ui.MeasurementGui import Ui_Form
 from util.repeatedTimer import RepeatedTimer
 from util.params import Params
 from playsound import playsound
+from util.workouts import WorkoutHandler
 import numpy as np
 import os
 
@@ -20,8 +21,6 @@ except:
 
 import board
 from analogio import AnalogIn
-
-from workout_config.workouts import WorkoutHandler
 
 class MeasurementCtrl(QWidget):
     def __init__(self):
@@ -128,8 +127,7 @@ class MeasurementCtrl(QWidget):
             self.measurementTimer = RepeatedTimer(1/self.fsMeas, self.onMeasurementCallback)
             self.running = True
 
-    def onStopMeasurement(self):
-        self.tareTimer.stop()
+    def onStopMeasurement(self, closeApp=False):
         if self.running:
             self.measurementTimer.stop()
             self.stopAudioThreadEvent.set()
@@ -151,6 +149,9 @@ class MeasurementCtrl(QWidget):
 
             self.measDataKg = (self.convertAdcValueToKg(self.rawMeasData) - self.tare)
             self.computeResultAndPlot()
+
+        if closeApp:
+            self.tareTimer.stop()
 
     def onMeasurementCallback(self):
         secCnt = self.secCnt

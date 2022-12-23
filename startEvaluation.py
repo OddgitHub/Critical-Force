@@ -1,4 +1,4 @@
-from workout_config.workouts import WorkoutHandler
+from util.workouts import WorkoutHandler
 import os, csv, re
 import matplotlib.pyplot as plt
 import numpy as np
