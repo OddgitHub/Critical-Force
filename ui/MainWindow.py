@@ -70,6 +70,8 @@ class MainWindow(QMainWindow):
         f.write(xml.decode())
         f.close()
 
+        self.setWindowTitle("Climbing Trainer - " + fileName[0])
+
     def onLoadActionClicked(self):
         fileName = QFileDialog.getOpenFileName(self, "Load Measurement...", "./results", "Training Files (*.xml)")
         with open(fileName[0]) as f:
@@ -102,6 +104,8 @@ class MainWindow(QMainWindow):
             
             self.dataTab.setData(personalDataDict)
             self.measTab.setData(measurementDataDict)
+
+            self.setWindowTitle("Climbing Trainer - " + fileName[0])
 
         except KeyError:
             msg = QMessageBox()
