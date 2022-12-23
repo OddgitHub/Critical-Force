@@ -4,23 +4,13 @@ from PySide6.QtGui import QAction
 from ui.MeasurementGui import Ui_Form
 from util.repeatedTimer import RepeatedTimer
 from util.params import Params
+from util.sensor import WeightSensor, convertAdcValueToKg
 from playsound import playsound
 from util.workouts import WorkoutHandler
 import numpy as np
-import os
 
 from threading import Thread
 from threading import Event
-
-# Set environment variable for MCP2221A
-try:
-    os.environ['BLINKA_MCP2221']
-except:
-    # set BLINKA_MCP2221=1
-    os.environ['BLINKA_MCP2221']='1'
-
-import board
-from analogio import AnalogIn
 
 class MeasurementCtrl(QWidget):
     def __init__(self):
@@ -29,8 +19,7 @@ class MeasurementCtrl(QWidget):
         form = Ui_Form()
         form.setupUi(self)
 
-        # Get access to the ADC
-        self.adc = AnalogIn(board.G1)
+        self.weightSensor = WeightSensor()
 
         #========================================
         # Init class members
@@ -147,7 +136,7 @@ class MeasurementCtrl(QWidget):
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
-            self.measDataKg = (self.convertAdcValueToKg(self.rawMeasData) - self.tare)
+            self.measDataKg = (convertAdcValueToKg(self.rawMeasData) - self.tare)
             self.computeResultAndPlot()
 
         if closeApp:
@@ -161,7 +150,7 @@ class MeasurementCtrl(QWidget):
             self.measFinished.trigger()
         else:
             # Read ADC value and save it to array
-            self.rawMeasData[self.measCnt] = self.adc.value
+            self.rawMeasData[self.measCnt] = self.weightSensor.getValue()
 
             # Workout timer handling
             if self.measCnt % self.fsMeas == 0:
@@ -185,7 +174,7 @@ class MeasurementCtrl(QWidget):
             self.measCnt += 1		
 
     def onTareVisualization(self):
-        self.currentWeight = self.convertAdcValueToKg(self.adc.value)
+        self.currentWeight = convertAdcValueToKg(self.weightSensor.getValue())
         weightString = str(np.around(self.currentWeight - self.tare, decimals=2))
         self.tareLabel.setText(weightString + 'kg')
 
@@ -204,12 +193,6 @@ class MeasurementCtrl(QWidget):
     #========================================
     # Helper functions
     #========================================
-    def getVoltage(self, raw):
-        return (raw * 3.3) / 65536
-
-    def convertAdcValueToKg(self, raw):
-        return self.getVoltage(raw) * -5 # TODO: atm only dummy!!
-
     def computeResultAndPlot(self):
         # Compute result (force as percentage of body weight)...
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
