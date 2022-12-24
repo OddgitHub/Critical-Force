@@ -17,7 +17,6 @@ class MainWindow(QMainWindow):
         # Basic window properties
         #========================================
         self.setWindowTitle(Params.appName.value)
-        self.setWindowIcon(QIcon(Params.appIcon.value))
         self.setMinimumSize(500, 500)
         self.setStatusBar(QStatusBar(self))
 
