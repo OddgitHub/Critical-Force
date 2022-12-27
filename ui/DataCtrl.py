@@ -27,10 +27,11 @@ class DataCtrl(QWidget):
         self.data['age'] = self.form.ageSpinBox.value()
         self.data['gender'] = self.form.genderComboBox.currentText()
         self.data['height'] = self.form.heightSpinBox.value()
-        self.data['ape'] = self.form.apeSpinBox.value()
+        self.data['span'] = self.form.spanSpinBox.value()
         self.data['routeGrade'] = self.form.routeComboBox.currentText()
         self.data['boulderGrade'] = self.form.boulderComboBox.currentText()
         self.data['email'] = self.form.emailLineEdit.text()
+        self.data['comment'] = self.form.commentTextEdit.toPlainText()
 
         #========================================
         # Connect signals
@@ -39,10 +40,11 @@ class DataCtrl(QWidget):
         self.form.ageSpinBox.valueChanged.connect(self.onAgeChanged)
         self.form.genderComboBox.currentIndexChanged.connect( self.onGenderChanged )
         self.form.heightSpinBox.valueChanged.connect(self.onHeightChanged)
-        self.form.apeSpinBox.valueChanged.connect(self.onApeChanged)
+        self.form.spanSpinBox.valueChanged.connect(self.onSpanChanged)
         self.form.routeComboBox.currentIndexChanged.connect( self.onRouteGradeChanged )
         self.form.boulderComboBox.currentIndexChanged.connect( self.onBoulderGradeChanged )
         self.form.emailLineEdit.textChanged.connect(self.onEmailChanged)
+        self.form.commentTextEdit.textChanged.connect(self.onCommentChanged)
 
     #========================================
     # Helper function
@@ -50,6 +52,7 @@ class DataCtrl(QWidget):
     @staticmethod
     def createClimbingGradeList():
         climbingGradeList = []
+        climbingGradeList.append('n/a')
         suffixes = ['a', 'a+', 'b', 'b+', 'c', 'c+']
         for num in range(6,10):
             for suf in suffixes:
@@ -71,8 +74,8 @@ class DataCtrl(QWidget):
     def onHeightChanged(self, height):
         self.data['height'] = height
 
-    def onApeChanged(self, ape):
-        self.data['ape'] = ape
+    def onSpanChanged(self, ape):
+        self.data['span'] = ape
 
     def onRouteGradeChanged(self, i):
         self.data['routeGrade'] = self.climbingGradeList[i]
@@ -83,6 +86,9 @@ class DataCtrl(QWidget):
     def onEmailChanged(self, email):
         self.data['email'] = email
 
+    def onCommentChanged(self):
+        self.data['comment'] = self.form.commentTextEdit.toPlainText()
+        
     #========================================
     # Get/set methods
     #========================================
@@ -94,7 +100,8 @@ class DataCtrl(QWidget):
         self.form.ageSpinBox.setValue(data['age'])
         self.form.genderComboBox.setCurrentIndex(self.genderList.index(data['gender']))
         self.form.heightSpinBox.setValue(data['height'])
-        self.form.apeSpinBox.setValue(data['ape'])
+        self.form.spanSpinBox.setValue(data['span'])
         self.form.routeComboBox.setCurrentIndex(self.climbingGradeList.index(data['routeGrade']))
         self.form.boulderComboBox.setCurrentIndex(self.climbingGradeList.index(data['boulderGrade']))
         self.form.emailLineEdit.setText(data['email'])
+        self.form.commentTextEdit.setPlainText(data['comment'])

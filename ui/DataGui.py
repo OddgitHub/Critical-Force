@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFormLayout,
-    QLabel, QLineEdit, QSizePolicy, QSpinBox,
+from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QLabel,
+    QLineEdit, QPlainTextEdit, QSizePolicy, QSpinBox,
     QWidget)
 
 class Ui_Form(object):
@@ -69,17 +69,10 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.heightSpinBox)
 
-        self.apeLabel = QLabel(Form)
-        self.apeLabel.setObjectName(u"apeLabel")
+        self.spanLabel = QLabel(Form)
+        self.spanLabel.setObjectName(u"spanLabel")
 
-        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.apeLabel)
-
-        self.apeSpinBox = QDoubleSpinBox(Form)
-        self.apeSpinBox.setObjectName(u"apeSpinBox")
-        self.apeSpinBox.setMinimum(-40.000000000000000)
-        self.apeSpinBox.setMaximum(40.000000000000000)
-
-        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.apeSpinBox)
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.spanLabel)
 
         self.routeLabel = QLabel(Form)
         self.routeLabel.setObjectName(u"routeLabel")
@@ -111,6 +104,30 @@ class Ui_Form(object):
 
         self.formLayout.setWidget(7, QFormLayout.FieldRole, self.emailLineEdit)
 
+        self.commentLabel = QLabel(Form)
+        self.commentLabel.setObjectName(u"commentLabel")
+
+        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.commentLabel)
+
+        self.commentTextEdit = QPlainTextEdit(Form)
+        self.commentTextEdit.setObjectName(u"commentTextEdit")
+
+        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.commentTextEdit)
+
+        self.spanSpinBox = QSpinBox(Form)
+        self.spanSpinBox.setObjectName(u"spanSpinBox")
+        self.spanSpinBox.setMaximum(300)
+
+        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.spanSpinBox)
+
+        QWidget.setTabOrder(self.nameLineEdit, self.ageSpinBox)
+        QWidget.setTabOrder(self.ageSpinBox, self.genderComboBox)
+        QWidget.setTabOrder(self.genderComboBox, self.heightSpinBox)
+        QWidget.setTabOrder(self.heightSpinBox, self.spanSpinBox)
+        QWidget.setTabOrder(self.spanSpinBox, self.routeComboBox)
+        QWidget.setTabOrder(self.routeComboBox, self.boulderComboBox)
+        QWidget.setTabOrder(self.boulderComboBox, self.emailLineEdit)
+        QWidget.setTabOrder(self.emailLineEdit, self.commentTextEdit)
 
         self.retranslateUi(Form)
 
@@ -126,12 +143,13 @@ class Ui_Form(object):
         self.genderLabel.setText(QCoreApplication.translate("Form", u"Gender", None))
         self.heightLabel.setText(QCoreApplication.translate("Form", u"Height", None))
         self.heightSpinBox.setSuffix(QCoreApplication.translate("Form", u" cm", None))
-        self.apeLabel.setText(QCoreApplication.translate("Form", u"Ape Index", None))
-        self.apeSpinBox.setPrefix("")
-        self.apeSpinBox.setSuffix(QCoreApplication.translate("Form", u" cm", None))
+        self.spanLabel.setText(QCoreApplication.translate("Form", u"Arm Span", None))
         self.routeLabel.setText(QCoreApplication.translate("Form", u"Max. Route Grade", None))
         self.boulderLabel.setText(QCoreApplication.translate("Form", u"Max. Boulder Grade", None))
         self.mailLabel.setText(QCoreApplication.translate("Form", u"Email", None))
         self.emailLineEdit.setPlaceholderText(QCoreApplication.translate("Form", u"Your email", None))
+        self.commentLabel.setText(QCoreApplication.translate("Form", u"Comment", None))
+        self.commentTextEdit.setPlaceholderText(QCoreApplication.translate("Form", u"Comment", None))
+        self.spanSpinBox.setSuffix(QCoreApplication.translate("Form", u" cm", None))
     # retranslateUi
 
