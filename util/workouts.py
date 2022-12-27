@@ -27,6 +27,7 @@ class WorkoutHandler:
 		repPause    = int(selectedWorkout['Repetition Pause'])
 		cntInDur	= self.cntInDur
 
+		# TODO: Why is this necessary?
 		assert(cntInDur <= startPause)
 		assert(cntInDur <= setPause)
 		#assert(cntInDur <= repPause)
