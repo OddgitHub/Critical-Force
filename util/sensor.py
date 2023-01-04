@@ -66,7 +66,8 @@ class WeightSensor():
             self.nau7802.read()  # Read 100 samples to establish zero offset
 
     def getValueInKg(self):
-        return self.sensorValue * (40.245 - 10.245) / (3377000 - 906000)
+        #print(self.sensorValue)
+        return self.sensorValue * (78.2 - 10.245) / (6889000 - 906000)
 
     def stop(self):
         # Must be called, when application is closed to stop the measurement thread

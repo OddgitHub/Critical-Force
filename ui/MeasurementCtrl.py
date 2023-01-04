@@ -193,7 +193,7 @@ class MeasurementCtrl(QWidget):
         self.weightSensor.stop()
 
     #========================================
-    # Helper functions
+    # Plot the result of the testing
     #========================================
     def computeResultAndPlot(self):
         # Compute result (force as percentage of body weight)...
