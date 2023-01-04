@@ -58,12 +58,16 @@ class WeightSensor():
         offset value. Use when scale is started, a new channel is selected, or to
         adjust for measurement drift. Remove weight and tare from load cell before
         executing."""
+        print("==================================================================")
         print("Sensor calibration. Remove any weight during application startup!")
         print("channel %1d calibrate.INTERNAL: %5s" % (self.nau7802.channel, self.nau7802.calibrate("INTERNAL")))
         print("channel %1d calibrate.OFFSET:   %5s" % (self.nau7802.channel, self.nau7802.calibrate("OFFSET")))
 
         for _ in range(100):
             self.nau7802.read()  # Read 100 samples to establish zero offset
+
+        print("Calibration done.")
+        print("==================================================================")            
 
     def getValueInKg(self):
         #print(self.sensorValue)
