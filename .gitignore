@@ -1,4 +1,5 @@
 *.pyc
 doc/Diplom2_Weitz.pdf
 results/
+__stuff__/
 .vscode/launch.json

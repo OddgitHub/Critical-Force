@@ -4,10 +4,11 @@ from PySide6.QtGui import QAction
 from ui.MeasurementGui import Ui_Form
 from util.repeatedTimer import RepeatedTimer
 from util.params import Params
-from util.sensor import WeightSensor, convertAdcValueToKg
+from util.sensor import WeightSensor
 from playsound import playsound
 from util.workouts import WorkoutHandler
 import numpy as np
+import time
 
 from threading import Thread
 from threading import Event
@@ -28,7 +29,6 @@ class MeasurementCtrl(QWidget):
         self.running = False
         self.lookupTable = 0
         self.countdown = 0
-        self.rawMeasData = []
         self.measDataKg = []
         self.numMeasSamples = 0
         self.measCnt = 0
@@ -98,13 +98,14 @@ class MeasurementCtrl(QWidget):
             if playLo.is_set():
                 playLo.clear()
                 playsound(Params.fileClickLo.value)
+            time.sleep(0.001) # Necessary to reduce priority of this thread?!
 
     def onStartMeasurement(self):
         if not self.running:
             self.tareTimer.stop()
             self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
             self.numMeasSamples = len(self.lookupTable) * self.fsMeas
-            self.rawMeasData = np.zeros(self.numMeasSamples)
+            self.measDataKg = np.zeros(self.numMeasSamples)
 
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
@@ -136,11 +137,12 @@ class MeasurementCtrl(QWidget):
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
-            self.measDataKg = (convertAdcValueToKg(self.rawMeasData) - self.tare)
             self.computeResultAndPlot()
 
+        # TODO this is not the right place to do this!
         if closeApp:
             self.tareTimer.stop()
+            self.weightSensor.stopThreadEvent.set() 
 
     def onMeasurementCallback(self):
         secCnt = self.secCnt
@@ -150,7 +152,7 @@ class MeasurementCtrl(QWidget):
             self.measFinished.trigger()
         else:
             # Read ADC value and save it to array
-            self.rawMeasData[self.measCnt] = self.weightSensor.getValue()
+            self.measDataKg[self.measCnt] = self.weightSensor.getValueInKg() - self.tare
 
             # Workout timer handling
             if self.measCnt % self.fsMeas == 0:
@@ -174,7 +176,7 @@ class MeasurementCtrl(QWidget):
             self.measCnt += 1		
 
     def onTareVisualization(self):
-        self.currentWeight = convertAdcValueToKg(self.weightSensor.getValue())
+        self.currentWeight = self.weightSensor.getValueInKg()
         weightString = str(np.around(self.currentWeight - self.tare, decimals=2))
         self.tareLabel.setText(weightString + 'kg')
 
