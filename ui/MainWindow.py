@@ -125,6 +125,6 @@ class MainWindow(QMainWindow):
                 msg.exec_()
     
     def closeEvent(self, event):
-        self.measTab.onStopMeasurement(closeApp=True)
+        self.measTab.onCloseApplication()
         event.accept()
         # event.ignore()

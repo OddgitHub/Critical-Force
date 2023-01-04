@@ -117,7 +117,7 @@ class MeasurementCtrl(QWidget):
             self.measurementTimer = RepeatedTimer(1/self.fsMeas, self.onMeasurementCallback)
             self.running = True
 
-    def onStopMeasurement(self, closeApp=False):
+    def onStopMeasurement(self):
         if self.running:
             self.measurementTimer.stop()
             self.stopAudioThreadEvent.set()
@@ -138,11 +138,6 @@ class MeasurementCtrl(QWidget):
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
             self.computeResultAndPlot()
-
-        # TODO this is not the right place to do this!
-        if closeApp:
-            self.tareTimer.stop()
-            self.weightSensor.stopThreadEvent.set() 
 
     def onMeasurementCallback(self):
         secCnt = self.secCnt
@@ -191,6 +186,11 @@ class MeasurementCtrl(QWidget):
         self.bodyWeight = value
         if len(self.measDataKg) > 0:
             self.computeResultAndPlot()
+
+    def onCloseApplication(self):
+        self.onStopMeasurement()
+        self.tareTimer.stop()
+        self.weightSensor.stop()
 
     #========================================
     # Helper functions

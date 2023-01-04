@@ -68,6 +68,10 @@ class WeightSensor():
     def getValueInKg(self):
         return self.sensorValue * (40.245 - 10.245) / (3377000 - 906000)
 
+    def stop(self):
+        # Must be called, when application is closed to stop the measurement thread
+        self.stopThreadEvent.set()         
+
 #========================================
 # Class for Bluetooth communication to 
 # a sensor connected to a Raspberry Pi
