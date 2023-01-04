@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         #========================================
         # Actions
         #========================================
-        saveAction = QAction("Save As...", self)
+        saveAction = QAction("Save As...", self, shortcut="Ctrl+s")
         saveAction.setStatusTip("Save the current measurement to the result database.")
         saveAction.triggered.connect(self.onSaveActionClicked)
 
@@ -68,11 +68,12 @@ class MainWindow(QMainWindow):
         exampleFileName = str(date.today()) + '_' + personalDataDict['name'] + '.xml'
         fileName = QFileDialog.getSaveFileName(self, "Save As...", "./results/" + exampleFileName, "Training Files (*.xml)")
 
-        f = open(fileName[0], "w")
-        f.write(xml.decode())
-        f.close()
+        if fileName[0] != "":
+            f = open(fileName[0], "w")
+            f.write(xml.decode())
+            f.close()
 
-        self.setWindowTitle(Params.appName.value + " - " + fileName[0])
+            self.setWindowTitle(Params.appName.value + " - " + fileName[0])
 
     def onLoadActionClicked(self):
         fileName = QFileDialog.getOpenFileName(self, "Load Measurement...", "./results", "Training Files (*.xml)")
