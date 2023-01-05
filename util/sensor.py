@@ -4,12 +4,20 @@ import os, re, serial, time
 from threading import Thread
 from threading import Event
 
+def calcScalingFactor():
+    weight1 = 5.245         # kg
+    sensorVal1 = 478970     # No unit
+    weight2 = 75.245        # kg
+    sensorVal2 = 6535000    # No unit
+    return (weight2 - weight1) / (sensorVal2 - sensorVal1)
+
 #========================================
 # Class for weight sensor
 #========================================
 class WeightSensor():
     def __init__(self):
         self.sensorValue = 0
+        self.scalingFactor = calcScalingFactor()
 
         # Set environment variable for MCP2221A
         try:
@@ -49,8 +57,13 @@ class WeightSensor():
                 break
             elif self.connected and self.nau7802.available:
                 self.sensorValue = self.nau7802.read()
+                #sum = 0
+                #avg = 100
+                #for _ in range(avg):
+                #    sum += self.nau7802.read()
+                #self.sensorValue = sum / avg
             else:
-                self.sensorValue = -1
+                self.sensorValue = -1/self.scalingFactor # Will result in -1kg
             time.sleep(0.001)
 
     def zero_channel(self):
@@ -71,11 +84,14 @@ class WeightSensor():
 
     def getValueInKg(self):
         #print(self.sensorValue)
-        return self.sensorValue * (78.2 - 10.245) / (6889000 - 906000)
+        return self.sensorValue * self.scalingFactor
 
     def stop(self):
-        # Must be called, when application is closed to stop the measurement thread
-        self.stopThreadEvent.set()         
+        if self.connected:
+            # Must be called, when application is closed to stop the measurement thread
+            self.stopThreadEvent.set()
+        else:
+            pass         
 
 #========================================
 # Class for Bluetooth communication to 

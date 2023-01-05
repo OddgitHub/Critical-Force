@@ -13,6 +13,9 @@ import time
 from threading import Thread
 from threading import Event
 
+from scipy.signal import medfilt
+import pyqtgraph as pg
+
 class MeasurementCtrl(QWidget):
     def __init__(self):
         super().__init__()        
@@ -59,6 +62,8 @@ class MeasurementCtrl(QWidget):
         self.graphicsView = form.graphicsView
         self.tareButton = form.tareButton
         self.tareLabel = form.tareLabel
+
+        self.graphicsView.setBackground('w')
 
         #========================================
         # Workout handling
@@ -199,10 +204,18 @@ class MeasurementCtrl(QWidget):
         # Compute result (force as percentage of body weight)...
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
+        # Filter data
+        filtData = medfilt(measDataPercentBw, self.fsMeas * 3 + (1 - np.mod(self.fsMeas,2)))
+        
         # ...and plot
         t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))
         self.graphicsView.clear()
-        self.graphicsView.plot(t, measDataPercentBw)
+
+        pen = pg.mkPen(color=(150,150,150), width=2)
+        self.graphicsView.plot(t, measDataPercentBw, pen=pen)
+
+        pen = pg.mkPen(color=(80,80,80), width=2)
+        self.graphicsView.plot(t, filtData, pen=pen)
         self.graphicsView.showGrid(x=True, y=True)
         self.graphicsView.setLabel('left', "% BW")
         self.graphicsView.setLabel('bottom', "Time [sec]")
