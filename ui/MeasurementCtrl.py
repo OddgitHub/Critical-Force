@@ -1,20 +1,20 @@
 
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
-from ui.MeasurementGui import Ui_Form
-from util.repeatedTimer import RepeatedTimer
-from util.params import Params
-from util.sensor import WeightSensor
+import pyqtgraph as pg
 from playsound import playsound
-from util.workouts import WorkoutHandler
 import numpy as np
 import time
 
 from threading import Thread
 from threading import Event
 
-from scipy.signal import medfilt
-import pyqtgraph as pg
+from ui.MeasurementGui import Ui_Form
+from util.repeatedTimer import RepeatedTimer
+from util.params import Params
+from util.sensor import WeightSensor
+from util.workouts import WorkoutHandler
+from util.criticalForce import computeCriticalForce
 
 class MeasurementCtrl(QWidget):
     def __init__(self):
@@ -108,7 +108,6 @@ class MeasurementCtrl(QWidget):
     def onStartMeasurement(self):
         if not self.running:
             self.tareTimer.stop()
-            self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
             self.numMeasSamples = len(self.lookupTable) * self.fsMeas
             self.measDataKg = np.zeros(self.numMeasSamples)
 
@@ -186,6 +185,7 @@ class MeasurementCtrl(QWidget):
     def onWorkoutChanged(self, id):
         self.workoutDescriptionLabel.setText(self.workouts[id]["Description"])
         self.selectedWorkoutId = id
+        self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
 
     def onBodyWeightChanged(self, value):
         self.bodyWeight = value
@@ -204,8 +204,7 @@ class MeasurementCtrl(QWidget):
         # Compute result (force as percentage of body weight)...
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
-        # Filter data
-        filtData = medfilt(measDataPercentBw, self.fsMeas * 3 + (1 - np.mod(self.fsMeas,2)))
+        filtData = computeCriticalForce(measDataPercentBw, self.lookupTable)
         
         # ...and plot
         t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))
@@ -231,9 +230,10 @@ class MeasurementCtrl(QWidget):
         return data
 
     def setData(self, data):
+        # This order is critical, don't change it
+        workoutIndex = next((index for (index, d) in enumerate(self.workouts) if d["Name"] == data['workout']), None)
+        self.workoutComboBox.setCurrentIndex(workoutIndex)
         self.measDataKg = np.asarray(data['measDataKg'])
         self.weightSpinBox.setValue(data['weight'])
 
-        workoutIndex = next((index for (index, d) in enumerate(self.workouts) if d["Name"] == data['workout']), None)
-        self.workoutComboBox.setCurrentIndex(workoutIndex)
         self.computeResultAndPlot()
