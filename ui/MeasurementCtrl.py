@@ -204,17 +204,28 @@ class MeasurementCtrl(QWidget):
         # Compute result (force as percentage of body weight)...
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
-        filtData = computeCriticalForce(measDataPercentBw, self.lookupTable)
+        filtData, cf = computeCriticalForce(measDataPercentBw, self.lookupTable)
         
         # ...and plot
         t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))
         self.graphicsView.clear()
 
+        # Plot raw measurement data
         pen = pg.mkPen(color=(150,150,150), width=2)
         self.graphicsView.plot(t, measDataPercentBw, pen=pen)
 
+        # Plot mean of each repetition block
         pen = pg.mkPen(color=(80,80,80), width=2)
         self.graphicsView.plot(t, filtData, pen=pen)
+
+        # Plot critical force
+        pen = pg.mkPen(color=(0,180,0), width=2)
+        self.graphicsView.plot([t[0],t[-1]], [cf,cf], pen=pen)
+
+        # Plot maximum force
+        pen = pg.mkPen(color=(180,0,0), width=2)
+        self.graphicsView.plot([t[0],t[-1]], [np.max(filtData),np.max(filtData)], pen=pen)
+
         self.graphicsView.showGrid(x=True, y=True)
         self.graphicsView.setLabel('left', "% BW")
         self.graphicsView.setLabel('bottom', "Time [sec]")

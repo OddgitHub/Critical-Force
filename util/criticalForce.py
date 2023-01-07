@@ -35,4 +35,12 @@ def computeCriticalForce(measData, lookupTable):
             sum += measData[i]
             ctr += 1
 
-    return result
+    # Remove zeros and duplicates
+    onlyMean = result[result.nonzero()]
+    b1 = np.append(onlyMean[1:], 0)
+    onlyMean = onlyMean[onlyMean != b1]
+
+    # Take the last 6 measurements to compute the critical force
+    criticalForce = np.mean(onlyMean[-6:])
+
+    return result, criticalForce
