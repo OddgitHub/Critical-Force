@@ -28,7 +28,7 @@ fsSensor = int(row['Sample Rate'])
 # Load corresponding workout
 workoutCfgPath = ('./workout_config/workouts.csv')
 workoutHandler = WorkoutHandler(workoutCfgPath)
-lookupTable  = workoutHandler.getLookupTables(workoutID)[0]
+lookupTable  = workoutHandler.getLookupTable(workoutID)[0]
 setDur, numSets, setPause, startPause = workoutHandler.getTotalSetDuration(workoutID)
 
 # Filter EMG signal

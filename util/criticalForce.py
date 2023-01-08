@@ -36,6 +36,9 @@ def computeRepetitionMean(measData, lookupTable):
     return result
 
 def computeCriticalForceAndWPrime(repetitionMean, repetitionDuration):
+    if sum(repetitionMean) == 0:
+        return 0, 0
+
     # Remove zeros and duplicates
     mean = repetitionMean[repetitionMean.nonzero()]
     b1 = np.append(mean[1:], 0)

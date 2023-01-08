@@ -4,7 +4,7 @@ from PySide6.QtGui import QAction
 import pyqtgraph as pg
 from playsound import playsound
 import numpy as np
-import time
+import time, datetime
 
 from threading import Thread
 from threading import Event
@@ -38,6 +38,7 @@ class MeasurementCtrl(QWidget):
         self.secCnt = 0
         self.currentWeight = 0
         self.tare = 0
+        self.timestamp = 'unknown'
         self.bodyWeight = form.bodyWeightSpinBox.value()
 
         #========================================
@@ -141,6 +142,7 @@ class MeasurementCtrl(QWidget):
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
+            self.timestamp = str(datetime.datetime.now())
             self.computeResultAndPlot()
 
     def onMeasurementCallback(self):
@@ -185,7 +187,7 @@ class MeasurementCtrl(QWidget):
     def onWorkoutChanged(self, id):
         self.workoutDescriptionLabel.setText(self.workouts[id]["Description"])
         self.selectedWorkoutId = id
-        self.lookupTable, self.countdown = self.workoutHandler.getLookupTables(self.selectedWorkoutId)
+        self.lookupTable, self.countdown = self.workoutHandler.getLookupTable(self.selectedWorkoutId)
 
     def onBodyWeightChanged(self, value):
         self.bodyWeight = value
@@ -247,14 +249,18 @@ class MeasurementCtrl(QWidget):
         data = {}
         data['weight'] = self.bodyWeight
         data['workout'] = self.workoutName
+        data['timestamp'] = self.timestamp
         data['measDataKg'] = self.measDataKg
         return data
 
     def setData(self, data):
-        # This order is critical, don't change it
         workoutIndex = next((index for (index, d) in enumerate(self.workouts) if d["Name"] == data['workout']), None)
         self.workoutComboBox.setCurrentIndex(workoutIndex)
+        self.workoutName = data['workout']
+        self.timestamp = data['timestamp']
         self.measDataKg = np.asarray(data['measDataKg'])
+
+        # The order is critical, always do this at the end
         self.weightSpinBox.setValue(data['weight'])
 
         self.computeResultAndPlot()

@@ -86,7 +86,7 @@ for i, workout in enumerate(workouts):
 
 selectedWorkoutId = int(input('\nPlease select a workout: '))
 selectedWorkoutName = workouts[selectedWorkoutId]['Name']
-lookupTable, countdown, countin = workoutHandler.getLookupTables(selectedWorkoutId)
+lookupTable, countdown, countin = workoutHandler.getLookupTable(selectedWorkoutId)
 totalDur = len(lookupTable)
 countdown = countdown.astype(str)
 

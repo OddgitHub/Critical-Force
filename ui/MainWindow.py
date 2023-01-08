@@ -1,5 +1,5 @@
 
-from PySide6.QtGui import QAction, QIcon
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMainWindow, QStatusBar, QTabWidget, QFileDialog, QMessageBox
 from dicttoxml import dicttoxml
 import xmltodict
@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
 
                 measurementDataDict['weight'] = float(allData['weight']['#text'])
                 measurementDataDict['workout'] = allData['workout']['#text']
+                measurementDataDict['timestamp'] = allData['timestamp']['#text']
                 measurementDataDict['measDataKg'] = []
                 if 'item' in allData['measDataKg']:
                     for data in allData['measDataKg']['item']:

@@ -16,7 +16,7 @@ class WorkoutHandler:
 	def getAllWorkouts(self):
 		return self.allWorkouts
 
-	def getLookupTables(self, workoutID):
+	def getLookupTable(self, workoutID):
 		selectedWorkout = self.allWorkouts[workoutID]
 
 		startPause  = self.startPause
