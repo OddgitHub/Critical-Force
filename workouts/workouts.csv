@@ -1,10 +1,6 @@
 Name;Description;Sets;Set Pause;Repetitions;Repetition Active;Repetition Pause
-Critical Force Test;The classical critical force test. 7 sec on, 3 sec off for 4 minutes in total. Pull as hard as you can.;1;5;24;7;3
-Warm-up;This can be used as warm-up for the critical force test. Switch hands after each repetition.;10;35;2;10;5
-Max Hangs 90%;The goal of this workout is to improve forearm and fingerstrength. Use 90% of your total load score on a 20mm edge.;6;120;1;10;0
-Anaerobic Capacity 80%;Deadhang repeaters. 7 sec hang, 3 sec rest at 80%.;6;180;5;7;3
-Test;Only for testing.;1;5;2;3;3
-Test Workout;Simple test workout. No weight, 15sec dead hang on 20mm edge, 1min Pause. 4 Sets.;4;60;1;15;0
-Anaerobic Capacity 70%;Deadhang repeaters. 7 sec hang, 3 sec rest at 70%.;6;180;6;7;3
-Density Hangs 70%;Long duration dead hangs. 30 second hangs at 70%.;3;240;1;30;0
+Critical Force Test;The classical finger flexor critical force test (ff-CF). 7 sec on, 3 sec off for 4 min in total. Pull as hard as you can.;1;5;24;7;3
+Max Isometric Finger Strength;Test the maximal isometric finger strength (MIFS). Hang for 5 sec with 120 sec pause (3 sets).;3;120;1;5;0
+Warm-up;This can be used as warm-up for the critical force test. Switch hands after each repetition (10 min).;10;35;2;10;5
+Test Workout;Only for testing.;1;5;2;3;3
 Measurement;Only for constant measuring;1;10;1;20;0

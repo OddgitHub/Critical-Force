@@ -76,3 +76,10 @@ class WorkoutHandler:
 
 		return setDur, numSets, setPause, startPause
 
+	def getRepDurationInclPause(self, workoutID):
+		selectedWorkout = self.allWorkouts[workoutID]
+		repActive   = int(selectedWorkout['Repetition Active'])
+		repPause    = int(selectedWorkout['Repetition Pause'])
+
+		return repActive + repPause
+

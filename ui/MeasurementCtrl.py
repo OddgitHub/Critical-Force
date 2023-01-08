@@ -14,7 +14,7 @@ from util.repeatedTimer import RepeatedTimer
 from util.params import Params
 from util.sensor import WeightSensor
 from util.workouts import WorkoutHandler
-from util.criticalForce import computeCriticalForce
+from util.criticalForce import computeRepetitionMean, computeCriticalForceAndWPrime, computeMaxForce
 
 class MeasurementCtrl(QWidget):
     def __init__(self):
@@ -201,33 +201,43 @@ class MeasurementCtrl(QWidget):
     # Plot the result of the testing
     #========================================
     def computeResultAndPlot(self):
-        # Compute result (force as percentage of body weight)...
+        # Compute result (force as percentage of body weight)
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
-        filtData, cf = computeCriticalForce(measDataPercentBw, self.lookupTable)
+        # Compute the mean force during repetition active times
+        repMean = computeRepetitionMean(measDataPercentBw, self.lookupTable)
         
-        # ...and plot
+        # Prepare plot
         t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))
         self.graphicsView.clear()
+        self.graphicsView.addLegend().anchor(itemPos=(1,0), parentPos=(1,0), offset=(-10,10))
 
         # Plot raw measurement data
         pen = pg.mkPen(color=(150,150,150), width=2)
-        self.graphicsView.plot(t, measDataPercentBw, pen=pen)
+        self.graphicsView.plot(t, measDataPercentBw, name="Raw Data", pen=pen)
 
         # Plot mean of each repetition block
         pen = pg.mkPen(color=(80,80,80), width=2)
-        self.graphicsView.plot(t, filtData, pen=pen)
+        self.graphicsView.plot(t, repMean, name="Rep. Mean", pen=pen)
 
-        # Plot critical force
-        pen = pg.mkPen(color=(0,180,0), width=2)
-        self.graphicsView.plot([t[0],t[-1]], [cf,cf], pen=pen)
+        # Compute the critical force, if necessary
+        if self.workouts[self.selectedWorkoutId]['Name'] == 'Critical Force Test':
+            # Plot critical force
+            repDur = self.workoutHandler.getRepDurationInclPause(self.selectedWorkoutId)
+            cf, W = computeCriticalForceAndWPrime(repMean, repDur)
+            cf = np.around(cf, decimals = 2)
+            W = np.around(W, decimals = 2)
+
+            pen = pg.mkPen(color=(0,180,0), width=2)
+            self.graphicsView.plot([t[0],t[-1]], [cf,cf], name="CF = " + str(cf) + " %BW | W\' = " + str(W) + " %BWs", pen=pen)
 
         # Plot maximum force
         pen = pg.mkPen(color=(180,0,0), width=2)
-        self.graphicsView.plot([t[0],t[-1]], [np.max(filtData),np.max(filtData)], pen=pen)
+        mf = computeMaxForce(repMean)
+        self.graphicsView.plot([t[0],t[-1]], [mf,mf], name="Max. Force = " + str(mf) + " %BW", pen=pen)
 
         self.graphicsView.showGrid(x=True, y=True)
-        self.graphicsView.setLabel('left', "% BW")
+        self.graphicsView.setLabel('left', "%BW")
         self.graphicsView.setLabel('bottom', "Time [sec]")
 
     #========================================

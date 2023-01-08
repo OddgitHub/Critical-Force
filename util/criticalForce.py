@@ -1,9 +1,7 @@
 import numpy as np
-from scipy.signal import medfilt
 from util.params import Params
-import matplotlib.pyplot as plt
 
-def computeCriticalForce(measData, lookupTable):
+def computeRepetitionMean(measData, lookupTable):
     fsMeas = Params.fsMeasurement.value
     lookupRsmpl = np.repeat(lookupTable, fsMeas)
 
@@ -35,12 +33,23 @@ def computeCriticalForce(measData, lookupTable):
             sum += measData[i]
             ctr += 1
 
+    return result
+
+def computeCriticalForceAndWPrime(repetitionMean, repetitionDuration):
     # Remove zeros and duplicates
-    onlyMean = result[result.nonzero()]
-    b1 = np.append(onlyMean[1:], 0)
-    onlyMean = onlyMean[onlyMean != b1]
+    mean = repetitionMean[repetitionMean.nonzero()]
+    b1 = np.append(mean[1:], 0)
+    mean = mean[mean != b1]
 
     # Take the last 6 measurements to compute the critical force
-    criticalForce = np.mean(onlyMean[-6:])
+    cf = np.mean(mean[-6:])
 
-    return result, criticalForce
+    # Compute W'
+    numSamples = len(mean)
+    W = (np.sum(mean) - numSamples * cf) * repetitionDuration
+
+    return cf, W
+
+def computeMaxForce(repetitionMean):
+    return np.around(np.max(repetitionMean), decimals=2)
+
