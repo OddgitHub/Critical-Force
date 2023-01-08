@@ -152,7 +152,7 @@ class MeasurementCtrl(QWidget):
             # Measurement finished
             self.measFinished.trigger()
         else:
-            # Read ADC value and save it to array
+            # Read value from sensor and save it to array
             self.measDataKg[self.measCnt] = self.weightSensor.getValueInKg() - self.tare
 
             # Workout timer handling
