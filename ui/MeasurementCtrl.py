@@ -206,6 +206,11 @@ class MeasurementCtrl(QWidget):
         # Compute result (force as percentage of body weight)
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
+        # Compensate delay between audio clicks and measurement
+        delayInSamples = round(Params.delayCompensation.value/1000 * self.fsMeas)
+        measDataPercentBw = np.roll(measDataPercentBw, -delayInSamples)
+        measDataPercentBw[-delayInSamples:] = 0
+
         # Compute the mean force during repetition active times
         repMean = computeRepetitionMean(measDataPercentBw, self.lookupTable)
         
