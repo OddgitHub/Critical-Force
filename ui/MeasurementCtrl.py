@@ -84,6 +84,12 @@ class MeasurementCtrl(QWidget):
         # Audio handling
         #========================================
         self.stopAudioThreadEvent = Event()
+        #######################################################################
+        # TODO: Do it like this, as soon as PySide6.5.0 is available:
+        #self.soundHi = QSoundEffect(parent) # parent = MainWindow
+        #self.soundHi.setSource(QUrl.fromLocalFile(Params.fileClickHi.value))
+        #self.soundHi.setVolume(1.0)
+        #######################################################################
         self.playSndHiEvent = Event()
         self.playSndLoEvent = Event()
 
@@ -115,7 +121,6 @@ class MeasurementCtrl(QWidget):
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
             self.tareButton.setEnabled(False)
-            self.tareLabel.setEnabled(False)
 
             self.audioThread = Thread(target=self.onAudioPlayback, args=(self.stopAudioThreadEvent, self.playSndHiEvent, self.playSndLoEvent))
             self.audioThread.start()
@@ -138,7 +143,6 @@ class MeasurementCtrl(QWidget):
             self.workoutComboBox.setEnabled(True)
             self.weightSpinBox.setEnabled(True)
             self.tareButton.setEnabled(True)
-            self.tareLabel.setEnabled(True)
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
@@ -153,7 +157,9 @@ class MeasurementCtrl(QWidget):
             self.measFinished.trigger()
         else:
             # Read value from sensor and save it to array
-            self.measDataKg[self.measCnt] = self.weightSensor.getValueInKg() - self.tare
+            valueKg = self.weightSensor.getValueInKg() - self.tare
+            self.tareLabel.setText(str(np.around(valueKg, decimals=2)) + 'kg')
+            self.measDataKg[self.measCnt] = valueKg
 
             # Workout timer handling
             if self.measCnt % self.fsMeas == 0:
@@ -174,7 +180,7 @@ class MeasurementCtrl(QWidget):
                 self.secCnt += 1
 
             # Increase measurement counter
-            self.measCnt += 1		
+            self.measCnt += 1	
 
     def onTareVisualization(self):
         self.currentWeight = self.weightSensor.getValueInKg()
