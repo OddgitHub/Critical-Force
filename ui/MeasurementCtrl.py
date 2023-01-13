@@ -12,18 +12,17 @@ from threading import Event
 from ui.MeasurementGui import Ui_Form
 from util.repeatedTimer import RepeatedTimer
 from util.params import Params
-from util.sensor import WeightSensor
 from util.workouts import WorkoutHandler
 from util.criticalForce import computeRepetitionMean, computeCriticalForceAndWPrime, computeMaxForce
 
 class MeasurementCtrl(QWidget):
-    def __init__(self):
+    def __init__(self, weightSensor):
         super().__init__()        
 
         form = Ui_Form()
         form.setupUi(self)
 
-        self.weightSensor = WeightSensor()
+        self.weightSensor = weightSensor
 
         #========================================
         # Init class members
@@ -72,7 +71,7 @@ class MeasurementCtrl(QWidget):
         self.selectedWorkoutId = 0
         self.workoutComboBox.currentIndexChanged.connect( self.onWorkoutChanged )
 
-        self.workoutHandler = WorkoutHandler(Params.workoutCfgPath.value)
+        self.workoutHandler = WorkoutHandler(Params.workoutCfgFile.value)
         self.workouts = self.workoutHandler.getAllWorkouts()
 
         for workout in self.workouts:
@@ -205,7 +204,6 @@ class MeasurementCtrl(QWidget):
     def onCloseApplication(self):
         self.onStopMeasurement()
         self.tareTimer.stop()
-        self.weightSensor.stop()
 
     #========================================
     # Plot the result of the testing

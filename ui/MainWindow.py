@@ -4,11 +4,14 @@ from PySide6.QtWidgets import QMainWindow, QStatusBar, QTabWidget, QFileDialog, 
 from dicttoxml import dicttoxml
 import xmltodict
 from datetime import date
-from util.params import Params
 import os
+
+from util.params import Params
+from util.sensor import WeightSensor
 
 from ui.MeasurementCtrl import MeasurementCtrl
 from ui.DataCtrl import DataCtrl
+from ui.CalibrationCtrl import CalibrationCtrl
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,6 +25,11 @@ class MainWindow(QMainWindow):
         self.setStatusBar(QStatusBar(self))
 
         #========================================
+        # Start the weight sensor
+        #========================================
+        self.weightSensor = WeightSensor()
+
+        #========================================
         # Actions
         #========================================
         saveAction = QAction("Save As...", self, shortcut="Ctrl+s")
@@ -32,6 +40,10 @@ class MainWindow(QMainWindow):
         loadAction.setStatusTip("Load previously measured data.")
         loadAction.triggered.connect(self.onLoadActionClicked)
 
+        calibrationAction = QAction("Calibration", self)
+        calibrationAction.setStatusTip("Calibrate the load-cell.")
+        calibrationAction.triggered.connect(self.onCalibrationActionClicked)
+
         #========================================
         # Build the gui
         #========================================
@@ -40,7 +52,7 @@ class MainWindow(QMainWindow):
         tabs.setMovable(False)
         
         # Measurement page
-        self.measTab = MeasurementCtrl()
+        self.measTab = MeasurementCtrl(self.weightSensor)
         tabs.addTab(self.measTab, "Measurement")
 
         # Personal data page
@@ -56,6 +68,9 @@ class MainWindow(QMainWindow):
         file_menu = menu.addMenu("&File")
         file_menu.addAction(loadAction)
         file_menu.addAction(saveAction)
+
+        settings_menu = menu.addMenu("&Settings")
+        settings_menu.addAction(calibrationAction)
 
     #========================================
     # Callbacks
@@ -124,8 +139,21 @@ class MainWindow(QMainWindow):
                 msg.setIcon(QMessageBox.Warning)
                 msg.setText("This files does not contain valid training data!")
                 msg.exec_()
+
+    def onCalibrationActionClicked(self):
+        if self.weightSensor.isConnected():
+            calibrationDialog = CalibrationCtrl(self.weightSensor, self)
+            calibrationDialog.setWindowTitle("Sensor Calibration")
+            calibrationDialog.exec_()
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("Warning")
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Calibration is not possible without weight sensor.\nPlease connect a fingerboard to your computer.")
+            msg.exec_()
     
     def closeEvent(self, event):
         self.measTab.onCloseApplication()
+        self.weightSensor.stop()
         event.accept()
         # event.ignore()

@@ -1,15 +1,11 @@
 from PySide6.QtWidgets import QMessageBox
 import os, re, serial, time
+import xmltodict
 
 from threading import Thread
 from threading import Event
 
-def calcScalingFactor():
-    weight1 = 5.245         # kg
-    sensorVal1 = 478970     # No unit
-    weight2 = 75.245        # kg
-    sensorVal2 = 6535000    # No unit
-    return (weight2 - weight1) / (sensorVal2 - sensorVal1)
+from util.params import Params
 
 #========================================
 # Class for weight sensor
@@ -17,7 +13,7 @@ def calcScalingFactor():
 class WeightSensor():
     def __init__(self):
         self.sensorValue = 0
-        self.scalingFactor = calcScalingFactor()
+        self.scalingFactor = self.calcScalingFactor(Params.calibrationFile.value)
 
         # Set environment variable for MCP2221A
         try:
@@ -57,13 +53,8 @@ class WeightSensor():
                 break
             elif self.connected and self.nau7802.available:
                 self.sensorValue = self.nau7802.read()
-                #sum = 0
-                #avg = 100
-                #for _ in range(avg):
-                #    sum += self.nau7802.read()
-                #self.sensorValue = sum / avg
             else:
-                self.sensorValue = -1/self.scalingFactor # Will result in -1kg
+                self.sensorValue = 0
             time.sleep(0.001)
 
     def zero_channel(self):
@@ -83,8 +74,13 @@ class WeightSensor():
         print("==================================================================")            
 
     def getValueInKg(self):
-        #print(self.sensorValue)
         return self.sensorValue * self.scalingFactor
+
+    def getRawValue(self):
+        return self.sensorValue
+
+    def isConnected(self):
+        return self.connected
 
     def stop(self):
         if self.connected:
@@ -92,6 +88,25 @@ class WeightSensor():
             self.stopThreadEvent.set()
         else:
             pass         
+
+    @staticmethod
+    def calcScalingFactor(calibrationFile):
+        try:
+            with open(calibrationFile) as f:
+                allData = xmltodict.parse(f.read())['root']
+            
+            weight1 = float(allData['weightInKg1']['#text'])
+            weight2 = float(allData['weightInKg2']['#text'])
+            sensorVal1 = float(allData['sensorValue1']['#text'])
+            sensorVal2 = float(allData['sensorValue2']['#text'])
+            return (weight2 - weight1) / (sensorVal2 - sensorVal1)
+        except:
+            msg = QMessageBox()
+            msg.setWindowTitle("Warning")
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Your sensor calibration file is corrupted.\nPlease re-calibrate your sensor.")
+            msg.exec_()
+            return 0
 
 #========================================
 # Class for Bluetooth communication to 
