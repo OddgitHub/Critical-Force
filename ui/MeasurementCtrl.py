@@ -2,7 +2,7 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
 import pyqtgraph as pg
-from audioplayer import AudioPlayer
+from playsound import playsound
 import numpy as np
 import time, datetime
 
@@ -89,8 +89,6 @@ class MeasurementCtrl(QWidget):
         #self.soundHi.setSource(QUrl.fromLocalFile(Params.fileClickHi.value))
         #self.soundHi.setVolume(1.0)
         #######################################################################
-        self.playerClickHi = AudioPlayer(Params.fileClickHi.value)
-        self.playerClickLo = AudioPlayer(Params.fileClickLo.value)
         self.playSndHiEvent = Event()
         self.playSndLoEvent = Event()
 
@@ -107,10 +105,10 @@ class MeasurementCtrl(QWidget):
                 break
             if playHi.is_set():
                 playHi.clear()
-                self.playerClickHi.play()
+                playsound(Params.fileClickHi.value)
             if playLo.is_set():
                 playLo.clear()
-                self.playerClickLo.play()
+                playsound(Params.fileClickLo.value)
             time.sleep(0.001) # Necessary to reduce priority of this thread?!
 
     def onStartMeasurement(self):
