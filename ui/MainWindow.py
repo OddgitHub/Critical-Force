@@ -30,15 +30,15 @@ class MainWindow(QMainWindow):
         #========================================
         # Actions
         #========================================
-        newAction = QAction("New", self, shortcut="Ctrl+n")
+        newAction = QAction("New Measurement", self, shortcut="Ctrl+n")
         newAction.setStatusTip("Create a new measurement. Remember to save your current measurement first.")
         newAction.triggered.connect(self.onNewActionClicked)
 
-        saveAction = QAction("Save As...", self, shortcut="Ctrl+s")
+        saveAction = QAction("Save Measurement As...", self, shortcut="Ctrl+s")
         saveAction.setStatusTip("Save the current measurement to in a result file.")
         saveAction.triggered.connect(self.onSaveActionClicked)
 
-        loadAction = QAction("Load...", self)
+        loadAction = QAction("Load Measurement...", self)
         loadAction.setStatusTip("Load previously measured data.")
         loadAction.triggered.connect(self.onLoadActionClicked)
 
