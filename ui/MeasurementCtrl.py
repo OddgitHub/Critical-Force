@@ -259,7 +259,7 @@ class MeasurementCtrl(QWidget):
         data['weight'] = self.bodyWeight
         data['workout'] = self.workoutName
         data['timestamp'] = self.timestamp
-        data['measDataKg'] = self.measDataKg
+        data['measDataKg'] = list(self.measDataKg)
         return data
 
     def setData(self, data):

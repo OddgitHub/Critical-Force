@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QDialog, QMessageBox
 import numpy as np
-from dicttoxml import dicttoxml
+import json
 
 from ui.CalibrationGui import Ui_Form
 from util.params import Params
@@ -44,10 +44,9 @@ class CalibrationCtrl(QDialog):
             calibrationDict['sensorValue1'] = self.sensorValue1
             calibrationDict['sensorValue2'] = self.sensorValue2
 
-            xml = dicttoxml(calibrationDict)
-            f = open(Params.calibrationFile.value, "w")
-            f.write(xml.decode())
-            f.close()
+            with open(Params.calibrationFile.value, 'w') as f:
+                json.dump(calibrationDict, f)
+                f.close()
 
             self.close()
             msg.setText("Please re-start the application to make the calibration become active.")
@@ -61,14 +60,14 @@ class CalibrationCtrl(QDialog):
     def onSetWeight1(self): 
         self.enableButtons(False)     
         self.weightInKg1 = self.form.weight1SpinBox.value()
-        self.sensorValue1 = np.around(self.getAverageSensorValue(100), decimals=2)
+        self.sensorValue1 = np.around(self.getAverageSensorValue(100), decimals=3)
         self.form.sensorValue1Label.setText(str(self.sensorValue1))
         self.enableButtons(True)
 
     def onSetWeight2(self):
         self.enableButtons(False)
         self.weightInKg2 = self.form.weight2SpinBox.value()
-        self.sensorValue2 = np.around(self.getAverageSensorValue(100), decimals=2)
+        self.sensorValue2 = np.around(self.getAverageSensorValue(100), decimals=3)
         self.form.sensorValue2Label.setText(str(self.sensorValue2))
         self.enableButtons(True)
 

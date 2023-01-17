@@ -6,7 +6,7 @@ class Params(Enum):
     delayCompensation = 350     # [ms] Delay between audio clicks and measurement
 
     workoutCfgFile = ('./settings/workouts.csv')
-    calibrationFile = ('./settings/calibration.xml')
+    calibrationFile = ('./settings/calibration.json')
     fileClickHi = ('./raw/clickhi.wav')
     fileClickLo = ('./raw/clicklo.wav')
     appIcon = ('./raw/icon.ico')

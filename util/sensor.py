@@ -1,6 +1,5 @@
 from PySide6.QtWidgets import QMessageBox
-import os, re, serial, time
-import xmltodict
+import os, re, serial, time, json
 
 from threading import Thread
 from threading import Event
@@ -94,12 +93,13 @@ class WeightSensor():
     def calcScalingFactor(calibrationFile):
         try:
             with open(calibrationFile) as f:
-                allData = xmltodict.parse(f.read())['root']
+                calibrationData = json.load(f)
+                f.close()
             
-            weight1 = float(allData['weightInKg1']['#text'])
-            weight2 = float(allData['weightInKg2']['#text'])
-            sensorVal1 = float(allData['sensorValue1']['#text'])
-            sensorVal2 = float(allData['sensorValue2']['#text'])
+            weight1 = calibrationData['weightInKg1']
+            weight2 = calibrationData['weightInKg2']
+            sensorVal1 = calibrationData['sensorValue1']
+            sensorVal2 = calibrationData['sensorValue2']
             return (weight2 - weight1) / (sensorVal2 - sensorVal1)
         except:
             msg = QMessageBox()
