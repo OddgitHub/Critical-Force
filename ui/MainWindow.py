@@ -1,4 +1,3 @@
-
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMainWindow, QStatusBar, QTabWidget, QFileDialog, QMessageBox
 from datetime import date
@@ -10,6 +9,7 @@ from util.sensor import WeightSensor
 from ui.MeasurementCtrl import MeasurementCtrl
 from ui.DataCtrl import DataCtrl
 from ui.CalibrationCtrl import CalibrationCtrl
+from ui.CompareresultCtrl import CompareresultCtrl
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -57,6 +57,10 @@ class MainWindow(QMainWindow):
         self.dataTab = DataCtrl()
         tabs.addTab(self.dataTab, "Personal Data")
 
+        # Compare results page
+        compareTab = CompareresultCtrl()
+        tabs.addTab(compareTab, "Compare Results")
+
         self.setCentralWidget(tabs)
         
         #========================================
@@ -94,18 +98,19 @@ class MainWindow(QMainWindow):
         fileName = QFileDialog.getOpenFileName(self, "Load Measurement...", "./results", "Training Files (*.json)")
 
         if os.path.isfile(fileName[0]):
-            with open(fileName[0]) as f:
-                resultData = json.load(f)
-                f.close()
             try:
+                with open(fileName[0]) as f:
+                    resultData = json.load(f)
+                    f.close()
+
                 self.dataTab.setData(resultData['Personal'])
                 self.measTab.setData(resultData['Measurement'])
                 self.setWindowTitle(Params.appName.value + " - " + fileName[0])
-            except KeyError:
+            except:
                 msg = QMessageBox()
                 msg.setWindowTitle("Warning")
                 msg.setIcon(QMessageBox.Warning)
-                msg.setText("This files does not contain valid training data!")
+                msg.setText("This file does not contain valid training data!")
                 msg.exec_()
 
     def onCalibrationActionClicked(self):

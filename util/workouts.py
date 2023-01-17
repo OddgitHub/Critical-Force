@@ -83,3 +83,14 @@ class WorkoutHandler:
 
 		return repActive + repPause
 
+	def getWorkoutDescription(self, workoutID):
+		return self.allWorkouts[workoutID]['Description']
+
+	def getWorkoutName(self, workoutID):
+		return self.allWorkouts[workoutID]['Name']
+
+	def getIdFromName(self, name):
+		for i, workout in enumerate(self.allWorkouts):
+			if workout['Name'] == name:
+				return i
+

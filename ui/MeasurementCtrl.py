@@ -31,14 +31,19 @@ class MeasurementCtrl(QWidget):
         self.running = False
         self.lookupTable = 0
         self.countdown = 0
-        self.measDataKg = []
         self.numMeasSamples = 0
         self.measCnt = 0
         self.secCnt = 0
         self.currentWeight = 0
         self.tare = 0
+
+        # Data that will be stored in result file
+        self.measDataKg = []
         self.timestamp = 'unknown'
         self.bodyWeight = form.bodyWeightSpinBox.value()
+        self.criticalForce = 0
+        self.wPrime = 0
+        self.maxForce = 0
 
         #========================================
         # Connect signals
@@ -72,12 +77,11 @@ class MeasurementCtrl(QWidget):
         self.workoutComboBox.currentIndexChanged.connect( self.onWorkoutChanged )
 
         self.workoutHandler = WorkoutHandler(Params.workoutCfgFile.value)
-        self.workouts = self.workoutHandler.getAllWorkouts()
 
-        for workout in self.workouts:
+        for workout in self.workoutHandler.getAllWorkouts():
             self.workoutComboBox.addItem(workout['Name'])
         
-        self.workoutName = self.workouts[self.selectedWorkoutId]['Name']
+        self.workoutName = self.workoutHandler.getWorkoutName(self.selectedWorkoutId)
 
         #========================================
         # Audio handling
@@ -137,7 +141,7 @@ class MeasurementCtrl(QWidget):
             self.secCnt = 0
             self.workoutLabel.setText('Stopped')
             self.workoutLabel.setStyleSheet("background-color: none")
-            self.workoutName = self.workouts[self.selectedWorkoutId]['Name']
+            self.workoutName = self.workoutHandler.getWorkoutName(self.selectedWorkoutId)
             
             self.workoutComboBox.setEnabled(True)
             self.weightSpinBox.setEnabled(True)
@@ -145,7 +149,7 @@ class MeasurementCtrl(QWidget):
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
-            self.timestamp = str(datetime.datetime.now())
+            self.timestamp = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             self.computeResultAndPlot()
 
     def onMeasurementCallback(self):
@@ -190,9 +194,9 @@ class MeasurementCtrl(QWidget):
         self.tare = self.currentWeight
 
     def onWorkoutChanged(self, id):
-        self.workoutDescriptionLabel.setText(self.workouts[id]["Description"])
+        self.workoutDescriptionLabel.setText(self.workoutHandler.getWorkoutDescription(id))
+        self.lookupTable, self.countdown = self.workoutHandler.getLookupTable(id)
         self.selectedWorkoutId = id
-        self.lookupTable, self.countdown = self.workoutHandler.getLookupTable(self.selectedWorkoutId)
 
     def onBodyWeightChanged(self, value):
         self.bodyWeight = value
@@ -232,7 +236,9 @@ class MeasurementCtrl(QWidget):
         self.graphicsView.plot(t, repMean, name="Rep. Mean", pen=pen)
 
         # Compute the critical force, if necessary
-        if self.workouts[self.selectedWorkoutId]['Name'] == 'Critical Force Test':
+        cf = 0
+        W = 0
+        if self.workoutHandler.getWorkoutName(self.selectedWorkoutId) == 'Critical Force Test':
             # Plot critical force
             repDur = self.workoutHandler.getRepDurationInclPause(self.selectedWorkoutId)
             cf, W = computeCriticalForceAndWPrime(repMean, repDur)
@@ -251,6 +257,11 @@ class MeasurementCtrl(QWidget):
         self.graphicsView.setLabel('left', "%BW")
         self.graphicsView.setLabel('bottom', "Time [sec]")
 
+        # Store result in class member variables
+        self.criticalForce = cf
+        self.wPrime = W
+        self.maxForce = mf
+
     #========================================
     # Get/set functions
     #========================================
@@ -259,12 +270,15 @@ class MeasurementCtrl(QWidget):
         data['weight'] = self.bodyWeight
         data['workout'] = self.workoutName
         data['timestamp'] = self.timestamp
+        data['criticalForce'] = self.criticalForce
+        data['wPrime'] = self.wPrime
+        data['maxForce'] = self.maxForce
         data['measDataKg'] = list(self.measDataKg)
         return data
 
     def setData(self, data):
-        workoutIndex = next((index for (index, d) in enumerate(self.workouts) if d["Name"] == data['workout']), None)
-        self.workoutComboBox.setCurrentIndex(workoutIndex)
+        workoutId = self.workoutHandler.getIdFromName(data['workout'])
+        self.workoutComboBox.setCurrentIndex(workoutId)
         self.workoutName = data['workout']
         self.timestamp = data['timestamp']
         self.measDataKg = np.asarray(data['measDataKg'])
@@ -272,4 +286,6 @@ class MeasurementCtrl(QWidget):
         # The order is critical, always do this at the end
         self.weightSpinBox.setValue(data['weight'])
 
+        # Since critical force, W' and max force will be re-calculated in 
+        # this function, it's not necessary to load them here.
         self.computeResultAndPlot()
