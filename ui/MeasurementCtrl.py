@@ -1,4 +1,3 @@
-
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
 import pyqtgraph as pg
@@ -222,7 +221,6 @@ class MeasurementCtrl(QWidget):
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
         # Compensate delay between audio clicks and measurement
-        self.delayInSamples = round(Params.delayCompensation.value/1000 * self.fsMeas)
         measDataPercentBw = np.roll(measDataPercentBw, -self.delayInSamples)
         measDataPercentBw[-self.delayInSamples:] = 0
 
