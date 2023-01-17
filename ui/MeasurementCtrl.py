@@ -14,6 +14,7 @@ from util.repeatedTimer import RepeatedTimer
 from util.params import Params
 from util.workouts import WorkoutHandler
 from util.criticalForce import computeRepetitionMean, computeCriticalForceAndWPrime, computeMaxForce
+from util.loadPreferences import loadPreferences
 
 class MeasurementCtrl(QWidget):
     def __init__(self, weightSensor):
@@ -25,9 +26,15 @@ class MeasurementCtrl(QWidget):
         self.weightSensor = weightSensor
 
         #========================================
+        # Load preferences
+        #========================================   
+        pref = loadPreferences()
+        self.fsMeas = pref['fsMeasurement']
+        self.delayInSamples = round(pref['delayCompensation']/1000 * self.fsMeas)
+
+        #========================================
         # Init class members
         #========================================   
-        self.fsMeas = Params.fsMeasurement.value
         self.running = False
         self.lookupTable = 0
         self.countdown = 0
@@ -37,7 +44,7 @@ class MeasurementCtrl(QWidget):
         self.currentWeight = 0
         self.tare = 0
 
-        # Data that will be stored in result file
+        # Data, that will be stored in result file
         self.measDataKg = np.asarray([])
         self.timestamp = 'unknown'
         self.bodyWeight = form.bodyWeightSpinBox.value()
@@ -215,12 +222,12 @@ class MeasurementCtrl(QWidget):
         measDataPercentBw = self.measDataKg / self.bodyWeight * 100
 
         # Compensate delay between audio clicks and measurement
-        delayInSamples = round(Params.delayCompensation.value/1000 * self.fsMeas)
-        measDataPercentBw = np.roll(measDataPercentBw, -delayInSamples)
-        measDataPercentBw[-delayInSamples:] = 0
+        self.delayInSamples = round(Params.delayCompensation.value/1000 * self.fsMeas)
+        measDataPercentBw = np.roll(measDataPercentBw, -self.delayInSamples)
+        measDataPercentBw[-self.delayInSamples:] = 0
 
         # Compute the mean force during repetition active times
-        repMean = computeRepetitionMean(measDataPercentBw, self.lookupTable)
+        repMean = computeRepetitionMean(measDataPercentBw, self.lookupTable, self.fsMeas)
         
         # Prepare plot
         t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))

@@ -8,8 +8,9 @@ from util.sensor import WeightSensor
 
 from ui.MeasurementCtrl import MeasurementCtrl
 from ui.DataCtrl import DataCtrl
-from ui.CalibrationCtrl import CalibrationCtrl
 from ui.CompareresultCtrl import CompareresultCtrl
+from ui.CalibrationCtrl import CalibrationCtrl
+from ui.PreferencesCtrl import PreferencesCtrl
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -46,6 +47,10 @@ class MainWindow(QMainWindow):
         calibrationAction.setStatusTip("Calibrate the load-cell.")
         calibrationAction.triggered.connect(self.onCalibrationActionClicked)
 
+        preferencesAction = QAction("Preferences", self)
+        preferencesAction.setStatusTip("Advanced user preferences.")
+        preferencesAction.triggered.connect(self.onPreferencesActionClicked)
+
         #========================================
         # Build the gui
         #========================================
@@ -79,6 +84,7 @@ class MainWindow(QMainWindow):
 
         settings_menu = menu.addMenu("&Settings")
         settings_menu.addAction(calibrationAction)
+        settings_menu.addAction(preferencesAction)
 
     #========================================
     # Callbacks
@@ -165,6 +171,11 @@ class MainWindow(QMainWindow):
             msg.setIcon(QMessageBox.Warning)
             msg.setText("Calibration is not possible without weight sensor.\nPlease connect a fingerboard to your computer.")
             msg.exec_()
+
+    def onPreferencesActionClicked(self):
+        preferencesDialog = PreferencesCtrl(self)
+        preferencesDialog.setWindowTitle("Preferences")
+        preferencesDialog.exec_()
     
     def closeEvent(self, event):
         self.measTab.onCloseApplication()

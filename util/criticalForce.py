@@ -1,9 +1,7 @@
 import numpy as np
-from util.params import Params
 
-def computeRepetitionMean(measData, lookupTable):
-    fsMeas = Params.fsMeasurement.value
-    lookupRsmpl = np.repeat(lookupTable, fsMeas)
+def computeRepetitionMean(measData, lookupTable, sampleRate):
+    lookupRsmpl = np.repeat(lookupTable, sampleRate)
 
     assert(len(measData) == len(lookupRsmpl))
     numSamples = len(lookupRsmpl)

@@ -18,7 +18,7 @@
     <widget class="QLabel" name="descriptionLabel">
      <property name="text">
       <string>In order to calibrate your load-cell, add two different weights to it.
-Click the &quot;set&quot; button as soon as each weight is applied.
+Click the &quot;Set&quot; button as soon as each weight is applied.
 
 The calibration will only become active, after re-starting the application!</string>
      </property>
@@ -95,7 +95,7 @@ The calibration will only become active, after re-starting the application!</str
    <item>
     <widget class="QLabel" name="weight2Description">
      <property name="text">
-      <string>Weight 2 should be between 60 - 80 kg.</string>
+      <string>Weight 2 should be between 60 - 90 kg.</string>
      </property>
     </widget>
    </item>

@@ -147,7 +147,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.descriptionLabel.setText(QCoreApplication.translate("Form", u"In order to calibrate your load-cell, add two different weights to it.\n"
-"Click the \"set\" button as soon as each weight is applied.\n"
+"Click the \"Set\" button as soon as each weight is applied.\n"
 "\n"
 "The calibration will only become active, after re-starting the application!", None))
         self.weight1Description.setText(QCoreApplication.translate("Form", u"Weight 1 should be between 5 - 20 kg.", None))
@@ -155,7 +155,7 @@ class Ui_Form(object):
         self.weight1SpinBox.setSuffix(QCoreApplication.translate("Form", u" kg", None))
         self.set1Button.setText(QCoreApplication.translate("Form", u"Set", None))
         self.sensorValue1Label.setText(QCoreApplication.translate("Form", u"0.0", None))
-        self.weight2Description.setText(QCoreApplication.translate("Form", u"Weight 2 should be between 60 - 80 kg.", None))
+        self.weight2Description.setText(QCoreApplication.translate("Form", u"Weight 2 should be between 60 - 90 kg.", None))
         self.weight2Label.setText(QCoreApplication.translate("Form", u"Added weight:", None))
         self.weight2SpinBox.setSuffix(QCoreApplication.translate("Form", u" kg", None))
         self.set2Button.setText(QCoreApplication.translate("Form", u"Set", None))
