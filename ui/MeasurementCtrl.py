@@ -258,9 +258,9 @@ class MeasurementCtrl(QWidget):
         self.graphicsView.setLabel('bottom', "Time [sec]")
 
         # Store result in class member variables
-        self.criticalForce = float(cf)
-        self.wPrime = float(W)
-        self.maxForce = float(mf)
+        self.criticalForce = cf
+        self.wPrime = W
+        self.maxForce = mf
 
     #========================================
     # Get/set functions
@@ -270,22 +270,30 @@ class MeasurementCtrl(QWidget):
         data['weight'] = self.bodyWeight
         data['workout'] = self.workoutName
         data['timestamp'] = self.timestamp
-        data['criticalForce'] = self.criticalForce
-        data['wPrime'] = self.wPrime
-        data['maxForce'] = self.maxForce
+        data['criticalForce'] = float(self.criticalForce)
+        data['wPrime'] = float(self.wPrime)
+        data['maxForce'] = float(self.maxForce)
         data['measDataKg'] = self.measDataKg.tolist()
         return data
 
-    def setData(self, data):
-        workoutId = self.workoutHandler.getIdFromName(data['workout'])
-        self.workoutComboBox.setCurrentIndex(workoutId)
+    def setData(self, data, reset=False):
         self.workoutName = data['workout']
+        workoutId = self.workoutHandler.getIdFromName(self.workoutName)
+        self.workoutComboBox.setCurrentIndex(workoutId)
         self.timestamp = data['timestamp']
         self.measDataKg = np.asarray(data['measDataKg'])
 
         # The order is critical, always do this at the end
         self.weightSpinBox.setValue(data['weight'])
 
-        # Since critical force, W' and max force will be re-calculated in 
-        # this function, it's not necessary to load them here.
-        self.computeResultAndPlot()
+        if not reset and len(self.measDataKg) > 0:
+            # Since critical force, W' and max force will be re-calculated in 
+            # the following  function, it's not necessary to load them here.
+            self.computeResultAndPlot()
+        else:
+            # This is done, if the user wants to do a completely new measurement
+            self.criticalForce = 0
+            self.wPrime = 0
+            self.maxForce = 0
+            self.graphicsView.clear()
+

@@ -30,8 +30,12 @@ class MainWindow(QMainWindow):
         #========================================
         # Actions
         #========================================
+        newAction = QAction("New", self, shortcut="Ctrl+n")
+        newAction.setStatusTip("Create a new measurement. Remember to save your current measurement first.")
+        newAction.triggered.connect(self.onNewActionClicked)
+
         saveAction = QAction("Save As...", self, shortcut="Ctrl+s")
-        saveAction.setStatusTip("Save the current measurement to the result database.")
+        saveAction.setStatusTip("Save the current measurement to in a result file.")
         saveAction.triggered.connect(self.onSaveActionClicked)
 
         loadAction = QAction("Load...", self)
@@ -68,6 +72,8 @@ class MainWindow(QMainWindow):
         #========================================
         menu = self.menuBar()
         file_menu = menu.addMenu("&File")
+        file_menu.addAction(newAction)
+        file_menu.addSeparator()
         file_menu.addAction(loadAction)
         file_menu.addAction(saveAction)
 
@@ -77,6 +83,41 @@ class MainWindow(QMainWindow):
     #========================================
     # Callbacks
     #========================================
+    def onNewActionClicked(self):
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Create new measurement")
+        msg.setText("Unsaved data will be lost. Do you want to continue?")
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.setIcon(QMessageBox.Question)
+        button = msg.exec_()
+
+        if button == QMessageBox.Yes:
+            personalDataDict = {}
+            personalDataDict['name'] = ''
+            personalDataDict['age'] = 0
+            personalDataDict['gender'] = 'm'
+            personalDataDict['height'] = 0
+            personalDataDict['span'] = 0
+            personalDataDict['routeGrade'] = 'n/a'
+            personalDataDict['boulderGrade'] = 'n/a'
+            personalDataDict['email'] = ''
+            personalDataDict['comment'] = ''
+            self.dataTab.setData(personalDataDict)
+
+            measurementDataDict = {}
+            measurementDataDict['weight'] = 70
+            measurementDataDict['workout'] = 'Critical Force Test'
+            measurementDataDict['timestamp'] = 'unknown'
+            measurementDataDict['criticalForce'] = 0
+            measurementDataDict['wPrime'] = 0
+            measurementDataDict['maxForce'] = 0
+            measurementDataDict['measDataKg'] = []
+            self.measTab.setData(measurementDataDict, reset=True)
+
+            self.setWindowTitle(Params.appName.value)
+        else:
+            pass
+
     def onSaveActionClicked(self):
         personalDataDict = self.dataTab.getData()
         measurementDataDict = self.measTab.getData()
