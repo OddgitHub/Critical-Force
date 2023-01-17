@@ -10,4 +10,4 @@ class Params(Enum):
     fileClickHi = ('./raw/clickhi.wav')
     fileClickLo = ('./raw/clicklo.wav')
     appIcon = ('./raw/icon.ico')
-    appName = 'Climbing Trainer'
+    appName = 'Critical Force'

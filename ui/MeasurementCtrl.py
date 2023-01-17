@@ -38,7 +38,7 @@ class MeasurementCtrl(QWidget):
         self.tare = 0
 
         # Data that will be stored in result file
-        self.measDataKg = []
+        self.measDataKg = np.asarray([])
         self.timestamp = 'unknown'
         self.bodyWeight = form.bodyWeightSpinBox.value()
         self.criticalForce = 0
@@ -258,9 +258,9 @@ class MeasurementCtrl(QWidget):
         self.graphicsView.setLabel('bottom', "Time [sec]")
 
         # Store result in class member variables
-        self.criticalForce = cf
-        self.wPrime = W
-        self.maxForce = mf
+        self.criticalForce = float(cf)
+        self.wPrime = float(W)
+        self.maxForce = float(mf)
 
     #========================================
     # Get/set functions
@@ -273,7 +273,7 @@ class MeasurementCtrl(QWidget):
         data['criticalForce'] = self.criticalForce
         data['wPrime'] = self.wPrime
         data['maxForce'] = self.maxForce
-        data['measDataKg'] = list(self.measDataKg)
+        data['measDataKg'] = self.measDataKg.tolist()
         return data
 
     def setData(self, data):
