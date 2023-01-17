@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QDialog, QMessageBox
 import numpy as np
-import json
+import json, time
 
 from ui.CalibrationGui import Ui_Form
 from util.params import Params
@@ -75,6 +75,7 @@ class CalibrationCtrl(QDialog):
         sum = 0
         for _ in range(numAvg):
             sum += self.weightSensor.getRawValue()
+            time.sleep(0.01)
         return sum/numAvg
 
     def enableButtons(self, enable=True):
