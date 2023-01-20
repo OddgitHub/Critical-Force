@@ -12,6 +12,6 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 * A cable to connect the MCP2221A and the NAU7802 (Qwiic/STEMMA QT compatible JST-SH cable).
 
 ### What software is required?
-* If you only want to use the software, you can download an executable for Windows (64bit) **here** (TODO). Just start the "Critical Force.exe", that's it. No installation required.
+* If you want to use the software, you can download an executable for Windows (64bit) **here** (TODO). Just start the "Critical Force.exe", that's it. No installation required.
 * If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python 3. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with pip.
 
