@@ -196,7 +196,7 @@ class MeasurementCtrl(QWidget):
                     elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
                         self.playSndLoEvent.set()
                     
-                    # Increase the repetition counter
+                    # Increase the repetition- and set counter
                     if self.countdown[secCnt] == 1 and self.lookupTable[secCnt] == 0:
                         self.repCnt += 1
                         if self.repCnt % (self.numRepsPerSet+1) == 0:
