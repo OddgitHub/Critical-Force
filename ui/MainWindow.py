@@ -11,6 +11,7 @@ from ui.DataCtrl import DataCtrl
 from ui.CompareresultCtrl import CompareresultCtrl
 from ui.CalibrationCtrl import CalibrationCtrl
 from ui.PreferencesCtrl import PreferencesCtrl
+from ui.About import AboutWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -51,6 +52,10 @@ class MainWindow(QMainWindow):
         preferencesAction.setStatusTip("Advanced user preferences.")
         preferencesAction.triggered.connect(self.onPreferencesActionClicked)
 
+        aboutAction = QAction("About", self)
+        aboutAction.setStatusTip("About this software.")
+        aboutAction.triggered.connect(self.onAboutActionClicked)
+
         #========================================
         # Build the gui
         #========================================
@@ -85,6 +90,9 @@ class MainWindow(QMainWindow):
         settings_menu = menu.addMenu("&Settings")
         settings_menu.addAction(calibrationAction)
         settings_menu.addAction(preferencesAction)
+
+        help_menu = menu.addMenu("&Help")
+        help_menu.addAction(aboutAction)
 
     #========================================
     # Callbacks
@@ -177,6 +185,11 @@ class MainWindow(QMainWindow):
         preferencesDialog.setWindowTitle("Preferences")
         preferencesDialog.exec_()
     
+    def onAboutActionClicked(self):
+        self.about = AboutWindow()
+        self.about.setWindowTitle("About")
+        self.about.show()
+
     def closeEvent(self, event):
         self.measTab.onCloseApplication()
         self.weightSensor.stop()
