@@ -38,8 +38,10 @@ class MeasurementCtrl(QWidget):
         self.lookupTable = 0
         self.countdown = 0
         self.numMeasSamples = 0
+        self.numRepsPerSet = 0
         self.measCnt = 0
         self.secCnt = 0
+        self.repCnt = 0
         self.currentWeight = 0
         self.tare = 0
 
@@ -145,6 +147,7 @@ class MeasurementCtrl(QWidget):
 
             self.measCnt = 0
             self.secCnt = 0
+            self.repCnt = 0
             self.workoutLabel.setText('Stopped')
             self.workoutLabel.setStyleSheet("background-color: none")
             self.workoutName = self.workoutHandler.getWorkoutName(self.selectedWorkoutId)
@@ -172,18 +175,28 @@ class MeasurementCtrl(QWidget):
 
             # Workout timer handling
             if self.measCnt % self.fsMeas == 0:
+                repString = ' ' + str(self.repCnt) + '/' + str(self.numRepsPerSet)
+
+                # Set string in the label
                 if self.lookupTable[secCnt] == 1:
-                    self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork')
+                    self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nWork' + repString)
                     self.workoutLabel.setStyleSheet("background-color: red")
                 else:
-                    self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nPause')
+                    self.workoutLabel.setText(str(self.countdown[secCnt]) + ' sec\nRest' + repString)
                     self.workoutLabel.setStyleSheet("background-color: lightgreen")
 
+                # Set the events for the click-playback
                 if secCnt > 0:
                     if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
                         self.playSndHiEvent.set()
                     elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
                         self.playSndLoEvent.set()
+                    
+                    # Increase the repetition counter
+                    if self.countdown[secCnt] == 1 and self.lookupTable[secCnt] == 0:
+                        self.repCnt += 1
+                        if self.repCnt % (self.numRepsPerSet+1) == 0:
+                            self.repCnt = 1
 
                 # Increase timer counter
                 self.secCnt += 1
@@ -202,6 +215,7 @@ class MeasurementCtrl(QWidget):
     def onWorkoutChanged(self, id):
         self.workoutDescriptionLabel.setText(self.workoutHandler.getWorkoutDescription(id))
         self.lookupTable, self.countdown = self.workoutHandler.getLookupTable(id)
+        self.numRepsPerSet = self.workoutHandler.getNumRepsPerSet(id)
         self.selectedWorkoutId = id
 
     def onBodyWeightChanged(self, value):

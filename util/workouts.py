@@ -89,6 +89,9 @@ class WorkoutHandler:
 	def getWorkoutName(self, workoutID):
 		return self.allWorkouts[workoutID]['Name']
 
+	def getNumRepsPerSet(self, workoutID):
+		return int(self.allWorkouts[workoutID]['Repetitions'])
+
 	def getIdFromName(self, name):
 		for i, workout in enumerate(self.allWorkouts):
 			if workout['Name'] == name:
