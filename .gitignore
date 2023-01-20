@@ -5,5 +5,4 @@ __stuff__/
 .vscode/launch.json
 build/
 dist/
-start.spec
 raw/icon.xcf

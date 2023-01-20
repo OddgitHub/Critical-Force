@@ -1,0 +1,13 @@
+Adafruit-Blinka==8.10.0
+adafruit-circuitpython-busdevice==5.2.3
+adafruit-circuitpython-register==1.9.15
+adafruit-circuitpython-requests==1.12.11
+adafruit-circuitpython-typing==1.8.3
+Adafruit-PlatformDetect==3.38.0
+Adafruit-PureIO==1.1.9
+hidapi==0.12.0.post2
+numpy
+playsound==1.2.2
+pyinstaller
+pyqtgraph
+PySide6==6.4.2
