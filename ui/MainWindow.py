@@ -139,6 +139,9 @@ class MainWindow(QMainWindow):
         resultDict['Personal'] = personalDataDict
         resultDict['Measurement'] = measurementDataDict
 
+        if not os.path.exists('./results'):
+           os.makedirs('./results')
+
         exampleFileName = str(date.today()) + '_' + personalDataDict['name'] + '.json'
         fileName = QFileDialog.getSaveFileName(self, "Save As...", "./results/" + exampleFileName, "Training Files (*.json)")
 
