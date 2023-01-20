@@ -6,3 +6,4 @@ __stuff__/
 build/
 dist/
 start.spec
+raw/icon.xcf
