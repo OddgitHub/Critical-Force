@@ -1,5 +1,5 @@
-# Critical Force Software
-Desktop application to measure climbing specific finger strength metrics such as critical force. With this software, it's possible to capture the force applied to a load-cell and analyse the data.
+# Critical Force Testing
+This is a desktop application to measure climbing specific finger strength metrics such as critical force. With this software, it's possible to capture the force applied to a load-cell and analyse the data.
 
 ### What is critical force?
 There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that describes why critical force can be a useful metric for climbers and how it can be measured. This whole software is based on this paper. The paper can be accessed via [this link](https://www.researchgate.net/publication/343601001_An_All-Out_Test_to_Determine_Finger_Flexor_Critical_Force_in_Rock_Climbers).
