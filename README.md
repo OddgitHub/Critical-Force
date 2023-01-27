@@ -5,6 +5,7 @@ This is a desktop application to measure climbing specific finger strength metri
 
 ### What is critical force?
 There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that describes why critical force can be a useful metric for climbers and how it can be measured. This whole software is based on this paper. The paper can be accessed via [this link](https://www.researchgate.net/publication/343601001_An_All-Out_Test_to_Determine_Finger_Flexor_Critical_Force_in_Rock_Climbers).
+[Here](https://youtu.be/_EY3XA7e-pw?t=10m45s) you can find a video of Dave MacLeod doing the test at Lattice, including some explanations.
 
 ### Which hardware is required?
 ![The electronic components, connected to the load-cell](https://philaudio.files.wordpress.com/2023/01/hardware.jpg?w=1024)
