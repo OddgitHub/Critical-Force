@@ -24,6 +24,6 @@ This software contains everything you need, to connect to the load-cell, run a w
 If you want to use the software, you can download an [executable for Windows (64bit) here](https://github.com/OddgitHub/Critical-Force/releases/download/v1.0.0/Critical-Force.zip). Just unzip and start the "Critical Force.exe", that's it. No installation required.
 
 #### Contribute to the source code
-If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python >=3.9. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with ```pip install -r requirements.txt```
+If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python >=3.9. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with `pip install -r requirements.txt`.
 
-The app is started via ```python start.py```.
+The app is started via `python start.py`.
