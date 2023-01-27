@@ -16,5 +16,5 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 
 ### Which software is required?
 ![Screenshot of the measurement view](https://philaudio.files.wordpress.com/2023/01/screenshot1-1.png)
-* If you want to use the software, you can download an [executable for Windows (64bit) here](https://github.com/OddgitHub/Critical-Force/releases/download/v1.0.0/Critical-Force.zip). Just start the "Critical Force.exe", that's it. No installation required.
+* If you want to use the software, you can download an [executable for Windows (64bit) here](https://github.com/OddgitHub/Critical-Force/releases/download/v1.0.0/Critical-Force.zip). Just unzip and start the "Critical Force.exe", that's it. No installation required.
 * If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python 3. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with pip.
