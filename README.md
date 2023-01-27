@@ -5,6 +5,7 @@ This is a desktop application to measure climbing specific finger strength metri
 
 ### What is critical force?
 There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that describes why critical force can be a useful metric for climbers and how it can be measured. This whole software is based on this paper. The paper can be accessed via [this link](https://www.researchgate.net/publication/343601001_An_All-Out_Test_to_Determine_Finger_Flexor_Critical_Force_in_Rock_Climbers).
+
 [Here](https://youtu.be/_EY3XA7e-pw?t=10m45s) you can find a video of Dave MacLeod doing the test at Lattice, including some explanations.
 
 ### Which hardware is required?
@@ -17,5 +18,14 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 
 ### Which software is required?
 ![Screenshot of the measurement view](https://philaudio.files.wordpress.com/2023/01/screenshot1-1.png)
-* If you want to use the software, you can download an [executable for Windows (64bit) here](https://github.com/OddgitHub/Critical-Force/releases/download/v1.0.0/Critical-Force.zip). Just unzip and start the "Critical Force.exe", that's it. No installation required.
-* If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python 3. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with pip.
+This software contains everything you need, to connect to the load-cell, run a workout, and analyze the data.
+
+#### Use the software
+If you want to use the software, you can download an [executable for Windows (64bit) here](https://github.com/OddgitHub/Critical-Force/releases/download/v1.0.0/Critical-Force.zip). Just unzip and start the "Critical Force.exe", that's it. No installation required.
+
+#### Contribute to the source code
+If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python >=3.9. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with pip:
+```pip install -r requirements.txt```
+
+Then you can execute the code with:
+```python start.py```
