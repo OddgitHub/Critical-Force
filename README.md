@@ -18,6 +18,7 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 
 ### Which software is required?
 ![Screenshot of the measurement view](https://philaudio.files.wordpress.com/2023/01/screenshot1-1.png)
+
 This software contains everything you need, to connect to the load-cell, run a workout, and analyze the data.
 
 #### Use the software
