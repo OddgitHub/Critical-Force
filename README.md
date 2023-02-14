@@ -18,3 +18,19 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 ![Screenshot of the measurement view](https://philaudio.files.wordpress.com/2023/01/screenshot1-1.png)
 * If you want to use the software, you can download an [executable for Windows (64bit) here](https://philaudio.wordpress.com/projects/climbing/). Just start the "Critical Force.exe", that's it. No installation required.
 * If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python 3. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with pip.
+
+# License
+Copyright 2023 Dr.-Ing. Philipp Bulling
+	
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).

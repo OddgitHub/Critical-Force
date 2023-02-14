@@ -1,3 +1,22 @@
+'''
+    Copyright 2023 Dr.-Ing. Philipp Bulling
+	
+	This file is part of "Critical Force".
+
+    "Critical Force" is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    "Critical Force" is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
 import pyqtgraph as pg
@@ -86,6 +105,7 @@ class MeasurementCtrl(QWidget):
         self.selectedWorkoutId = 0
         self.workoutComboBox.currentIndexChanged.connect( self.onWorkoutChanged )
 
+        
         self.workoutHandler = WorkoutHandler(Params.workoutCfgFile.value)
 
         for workout in self.workoutHandler.getAllWorkouts():

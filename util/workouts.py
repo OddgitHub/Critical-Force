@@ -1,5 +1,25 @@
-import csv
+'''
+    Copyright 2023 Dr.-Ing. Philipp Bulling
+	
+	This file is part of "Critical Force".
+
+    "Critical Force" is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    "Critical Force" is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
+import csv, sys
 import numpy as np
+from PySide6.QtWidgets import QMessageBox
 
 class WorkoutHandler:
 
@@ -8,11 +28,19 @@ class WorkoutHandler:
 		self.startPause = 5		# This pause is automatically added at the beginning of the workout
 		self.cntInDur = 3		# This is the count-in before a new activity starts
 
-		with open(csvFile, mode='r') as csvFile:
-			csvReader = csv.DictReader(csvFile, delimiter=';')
-			for row in csvReader:
-				self.allWorkouts.append(row)
-
+		try:
+			with open(csvFile, mode='r') as csvFile:
+				csvReader = csv.DictReader(csvFile, delimiter=';')
+				for row in csvReader:
+					self.allWorkouts.append(row)
+		except:
+			msg = QMessageBox()
+			msg.setWindowTitle("Warning")
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("Could not find the file \"workouts.csv\"!\nPlease ensure that this file exists in the subfolder \"settings\". The application can't start without this file.")
+			msg.exec_()	
+			sys.exit()
+			
 	def getAllWorkouts(self):
 		return self.allWorkouts
 
