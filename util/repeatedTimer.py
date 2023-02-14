@@ -1,4 +1,5 @@
 '''
+    Software to measure climbing specific finger strength measures, such as Critical Force.
     Copyright 2023 Dr.-Ing. Philipp Bulling
 	
 	This file is part of "Critical Force".
@@ -14,7 +15,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+    along with "Critical Force".  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 #==============================================================================

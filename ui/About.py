@@ -1,4 +1,5 @@
 '''
+    Software to measure climbing specific finger strength measures, such as Critical Force.
     Copyright 2023 Dr.-Ing. Philipp Bulling
 	
 	This file is part of "Critical Force".
@@ -14,7 +15,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+    along with "Critical Force".  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
@@ -39,7 +40,7 @@ class AboutWindow(QWidget):
             "If you encounter any issues, please reach out to philippbulling@gmail.com.")
         licenseLabel.setWordWrap(True)
 
-        nameLabel = QLabel("Dr.-Ing. Philipp Bulling, 2023")
+        nameLabel = QLabel("Copyright 2023 Dr.-Ing. Philipp Bulling")
         versionLabel = QLabel("Software Version: " + Params.version.value)
 
         layout.addWidget(aboutLabel)
@@ -48,4 +49,4 @@ class AboutWindow(QWidget):
         layout.addWidget(nameLabel)
         layout.addWidget(versionLabel)
         self.setLayout(layout)
-        self.resize(430, 300)
+        self.resize(430, 350)
