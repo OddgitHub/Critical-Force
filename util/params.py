@@ -32,4 +32,4 @@ class Params(Enum):
     fileClickLo = ('./raw/clicklo.wav')
     appIcon = ('./raw/icon.ico')
     appName = 'Critical Force'
-    version = '1.0.1'
+    version = '1.0.2'
