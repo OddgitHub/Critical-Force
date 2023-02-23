@@ -33,7 +33,7 @@ from util.repeatedTimer import RepeatedTimer
 from util.params import Params
 from util.workouts import WorkoutHandler
 from util.criticalForce import computeRepetitionMean, computeCriticalForceAndWPrime, computeMaxForce
-from util.loadPreferences import loadPreferences
+from util.preferencesHandling import loadPreferences
 
 class MeasurementCtrl(QWidget):
     def __init__(self, weightSensor):

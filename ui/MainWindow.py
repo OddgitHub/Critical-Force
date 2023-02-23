@@ -25,6 +25,7 @@ import os, json
 
 from util.params import Params
 from util.sensor import WeightSensor
+from util.preferencesHandling import getWorkingDirectory, setWorkingDirectory
 
 from ui.MeasurementCtrl import MeasurementCtrl
 from ui.DataCtrl import DataCtrl
@@ -159,27 +160,26 @@ class MainWindow(QMainWindow):
         resultDict['Personal'] = personalDataDict
         resultDict['Measurement'] = measurementDataDict
 
-        if not os.path.exists('./results'):
-           os.makedirs('./results')
-
         exampleFileName = str(date.today()) + '_' + personalDataDict['name'] + '.json'
-        fileName = QFileDialog.getSaveFileName(self, "Save As...", "./results/" + exampleFileName, "Training Files (*.json)")
+        fileName = QFileDialog.getSaveFileName(self, "Save As...", os.path.join(getWorkingDirectory(), exampleFileName), "Training Files (*.json)")
 
         if fileName[0] != "":
             with open(fileName[0], 'w') as f:
                 json.dump(resultDict, f)
                 f.close()
+            setWorkingDirectory(os.path.split(fileName[0])[0])
 
             self.setWindowTitle(Params.appName.value + " - " + fileName[0])
 
     def onLoadActionClicked(self):
-        fileName = QFileDialog.getOpenFileName(self, "Load Measurement...", "./results", "Training Files (*.json)")
+        fileName = QFileDialog.getOpenFileName(self, "Load Measurement...", getWorkingDirectory(), "Training Files (*.json)")
 
         if os.path.isfile(fileName[0]):
             try:
                 with open(fileName[0]) as f:
                     resultData = json.load(f)
                     f.close()
+                setWorkingDirectory(os.path.split(fileName[0])[0])
 
                 self.dataTab.setData(resultData['Personal'])
                 self.measTab.setData(resultData['Measurement'])

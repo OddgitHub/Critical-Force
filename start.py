@@ -18,16 +18,31 @@
     along with "Critical Force".  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import sys
+import sys, os
 
 from ui.MainWindow import MainWindow
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QIcon
 from util.params import Params
+from platformdirs import user_data_dir, user_documents_dir
+from shutil import copy
 
+from util.preferencesHandling import setWorkingDirectory
 
+def prepareSettingsFiles():
+    basedir = os.path.dirname(__file__)
+    datadir = user_data_dir(Params.appName.value, Params.appAuthor.value)
+    if not os.path.exists(datadir):
+        os.makedirs(datadir)
+    if not os.path.exists(Params.calibrationFile.value):
+        copy(os.path.join(basedir, 'settings/calibration.json'), datadir)
+    if not os.path.exists(Params.preferencesFile.value):
+        copy(os.path.join(basedir, 'settings/preferences.json'), datadir)
+    if not os.path.exists(Params.lastWorkingDirFile.value):
+        setWorkingDirectory(user_documents_dir())
 
 if __name__=='__main__':
+    prepareSettingsFiles()
 
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(Params.appIcon.value))

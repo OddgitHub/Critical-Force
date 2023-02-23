@@ -19,7 +19,8 @@
 '''
 
 from util.params import Params
-import json
+import json, os
+from platformdirs import user_documents_dir
 
 def loadPreferences():
     try:
@@ -34,3 +35,17 @@ def loadPreferences():
         preferences['delayCompensation'] = Params.delayCompensationDefault.value
     
     return preferences
+
+def setWorkingDirectory(workDir):
+    with open(Params.lastWorkingDirFile.value, 'w') as f:
+        json.dump(workDir, f)
+        f.close()
+
+def getWorkingDirectory():
+    with open(Params.lastWorkingDirFile.value, 'r') as f:
+        workDir = json.load(f)
+        f.close()
+    if os.path.exists(workDir):
+        return workDir
+    else:
+        return user_documents_dir()

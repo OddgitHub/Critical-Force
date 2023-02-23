@@ -24,6 +24,8 @@ from PySide6.QtCore import QAbstractTableModel, Qt
 import os, json, csv, operator, copy
 from datetime import date
 
+from util.preferencesHandling import getWorkingDirectory, setWorkingDirectory
+
 class TableModel(QAbstractTableModel):
     def __init__(self):
         super(TableModel, self).__init__()
@@ -76,43 +78,45 @@ class CompareresultCtrl(QWidget):
         tableView.setSortingEnabled(True)
 
     def onLoadButtonClicked(self):
-        fileNames = QFileDialog.getOpenFileNames(self, "Load Result Files...", "./results", "Training Files (*.json)")[0]
+        fileNames = QFileDialog.getOpenFileNames(self, "Load Result Files...", getWorkingDirectory(), "Training Files (*.json)")[0]
         
-        newData = copy.deepcopy(self.tableModel.tableData)
-        
-        for fileName in fileNames:
-            if os.path.isfile(fileName):
-                try:
-                    with open(fileName) as f:
-                        resultData = json.load(f)
-                        f.close()
+        if len(fileNames) > 0:
+            newData = copy.deepcopy(self.tableModel.tableData)
+            
+            for fileName in fileNames:
+                if os.path.isfile(fileName):
+                    try:
+                        with open(fileName) as f:
+                            resultData = json.load(f)
+                            f.close()
 
-                    res = resultData['Personal'] | resultData['Measurement']
-                    res.pop('measDataKg')
-                    newData.append(list(res.values()))
+                        res = resultData['Personal'] | resultData['Measurement']
+                        res.pop('measDataKg')
+                        newData.append(list(res.values()))
 
-                except:
-                        msg = QMessageBox()
-                        msg.setWindowTitle("Warning")
-                        msg.setIcon(QMessageBox.Warning)
-                        msg.setText("This file: does not contain valid training data:\n" + fileName)
-                        msg.exec_()
+                    except:
+                            msg = QMessageBox()
+                            msg.setWindowTitle("Warning")
+                            msg.setIcon(QMessageBox.Warning)
+                            msg.setText("This file: does not contain valid training data:\n" + fileName)
+                            msg.exec_()
 
-        newHeader = list(res.keys())
+            newHeader = list(res.keys())
+            setWorkingDirectory(os.path.split(fileName)[0])
 
-        # Check if all rows of the table have the same number of columns
-        allColumns = [len(r) for r in newData]
-        allColumns.append(len(newHeader))
-        if all(elem == allColumns[0] for elem in allColumns):
-            self.tableModel.tableData = newData
-            self.tableModel.tableHeader = newHeader
-            self.tableModel.layoutChanged.emit()
-        else:
-            msg = QMessageBox()
-            msg.setWindowTitle("Warning")
-            msg.setIcon(QMessageBox.Warning)
-            msg.setText("Something went wrong, could not load result files.")
-            msg.exec_()
+            # Check if all rows of the table have the same number of columns
+            allColumns = [len(r) for r in newData]
+            allColumns.append(len(newHeader))
+            if all(elem == allColumns[0] for elem in allColumns):
+                self.tableModel.tableData = newData
+                self.tableModel.tableHeader = newHeader
+                self.tableModel.layoutChanged.emit()
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Warning")
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText("Something went wrong, could not load result files.")
+                msg.exec_()
 
 
     def onClearButtonClicked(self):
@@ -122,7 +126,7 @@ class CompareresultCtrl(QWidget):
 
     def onExportButtonClicked(self):
         exampleFileName = str(date.today()) + '_CombinedResults.csv'
-        fileName = QFileDialog.getSaveFileName(self, "Save As...", "./results/" + exampleFileName, "Table Data (*.csv)")
+        fileName = QFileDialog.getSaveFileName(self, "Save As...", os.path.join(getWorkingDirectory(), exampleFileName), "Table Data (*.csv)")
 
         if fileName[0] != "":
             with open(fileName[0], 'w', newline='') as f:
@@ -130,4 +134,5 @@ class CompareresultCtrl(QWidget):
                 writer.writerow(self.tableModel.tableHeader)
                 writer.writerows(self.tableModel.tableData)
                 f.close()
+            setWorkingDirectory(os.path.split(fileName[0])[0])
 

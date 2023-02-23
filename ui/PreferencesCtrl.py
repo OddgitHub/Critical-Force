@@ -23,7 +23,7 @@ import json
 
 from ui.PreferencesGui import Ui_Form
 from util.params import Params
-from util.loadPreferences import loadPreferences
+from util.preferencesHandling import loadPreferences
 
 class PreferencesCtrl(QDialog):
 
