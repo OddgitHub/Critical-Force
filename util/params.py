@@ -20,16 +20,25 @@
 
 from enum import Enum
 import os
+from platformdirs import user_data_dir
+
+APPNAME = 'CriticalForce'
+APPAUTHOR = 'pbulling'
+basedir = os.path.dirname(os.path.dirname(__file__))
+datadir = user_data_dir(APPNAME, APPAUTHOR)
 
 class Params(Enum):
     fsMeasurementDefault = 10          # [Hz]
     delayCompensationDefault = 350     # [ms] Delay between audio clicks and measurement
 
-    workoutCfgFile = ('./settings/workouts.csv')
-    calibrationFile = ('./settings/calibration.json')
-    preferencesFile = ('./settings/preferences.json')
-    fileClickHi = ('./raw/clickhi.wav')
-    fileClickLo = ('./raw/clicklo.wav')
-    appIcon = ('./raw/icon.ico')
-    appName = 'Critical Force'
-    version = '1.0.2'
+    calibrationFile = os.path.join(datadir, 'calibration.json')
+    preferencesFile = os.path.join(datadir, 'preferences.json')
+    lastWorkingDirFile = os.path.join(datadir, 'lastworkingdir.json')
+
+    workoutCfgFile = os.path.join(basedir, 'settings/workouts.csv')
+    fileClickHi = os.path.join(basedir, 'raw/clickhi.wav')
+    fileClickLo = os.path.join(basedir, 'raw/clicklo.wav')
+    appIcon = os.path.join(basedir, 'raw/icon.ico')
+    appName = APPNAME
+    appAuthor = APPAUTHOR
+    version = '1.1.0'

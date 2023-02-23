@@ -53,6 +53,11 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.gridLayout)
 
+        self.warningLabel = QLabel(Form)
+        self.warningLabel.setObjectName(u"warningLabel")
+
+        self.verticalLayout.addWidget(self.warningLabel)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -84,6 +89,8 @@ class Ui_Form(object):
         self.sampFreqSpinBox.setSuffix(QCoreApplication.translate("Form", u" Hz", None))
         self.delayCompLabel.setText(QCoreApplication.translate("Form", u"Delay Compensation Audio Playback:", None))
         self.delayCompSpinBox.setSuffix(QCoreApplication.translate("Form", u" ms", None))
+        self.warningLabel.setText(QCoreApplication.translate("Form", u"Please do not change these values if you do not really know\n"
+"what you are doing! This is not yet properly tested.", None))
         self.saveButton.setText(QCoreApplication.translate("Form", u"Save", None))
         self.cancelButton.setText(QCoreApplication.translate("Form", u"Cancel", None))
     # retranslateUi
