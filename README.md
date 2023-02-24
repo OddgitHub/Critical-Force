@@ -9,6 +9,7 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 [Here](https://youtu.be/_EY3XA7e-pw?t=10m45s) you can find a video of Dave MacLeod doing the test at Lattice, including some explanations.
 
 ### Which hardware is required?
+See also [this blog](https://philaudio.wordpress.com/projects/climbing/).
 ![The electronic components, connected to the load-cell](https://philaudio.files.wordpress.com/2023/01/hardware.jpg?w=1024)
 * A load-cell (preferably S-type) and 2 eyebolts to hang it up. The maximum load should be higher than the force you can apply to a 20mm crimp with one arm. As long as you're not Alex Megos, 100kg should be fine.
 * A (wooden) finger rung, that is somehow attached to the load-cell. Preferably 20mm with 10mm radius to ensure comparability.
