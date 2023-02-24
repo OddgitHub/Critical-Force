@@ -1,4 +1,4 @@
-![A load-cell with a 20mm testing rung](https://philaudio.files.wordpress.com/2023/01/wagezelle.jpg?w=1024)
+![A load-cell with a 20mm testing rung](https://philaudio.files.wordpress.com/2023/02/dscf4199-1.jpg?w=1024)
 
 # Critical Force Testing
 This is a desktop application to measure climbing specific finger strength metrics such as critical force. With this software, it's possible to capture the force applied to a load-cell and analyse the data.
@@ -22,7 +22,7 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 This software contains everything you need, to connect to the load-cell, run a workout, and analyze the data.
 
 #### Use the software
-If you want to use the software, you can download the pre-build files here:
+If you want to use the software, you can download the latest release here:
 * [Executable for Windows (64bit)](https://github.com/OddgitHub/Critical-Force/releases/download/v1.1.0/Critical.Force.exe)
 * [Application for Macs with Apple M chips](https://github.com/OddgitHub/Critical-Force/releases/download/v1.1.0/Critical.Force.app.zip) (unzip and allow app start)
 
