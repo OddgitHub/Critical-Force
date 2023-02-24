@@ -9,13 +9,13 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 [Here](https://youtu.be/_EY3XA7e-pw?t=10m45s) you can find a video of Dave MacLeod doing the test at Lattice, including some explanations.
 
 ### Which hardware is required?
-See also [this blog](https://philaudio.wordpress.com/projects/climbing/).
 ![The electronic components, connected to the load-cell](https://philaudio.files.wordpress.com/2023/01/hardware.jpg?w=1024)
 * A load-cell (preferably S-type) and 2 eyebolts to hang it up. The maximum load should be higher than the force you can apply to a 20mm crimp with one arm. As long as you're not Alex Megos, 100kg should be fine.
 * A (wooden) finger rung, that is somehow attached to the load-cell. Preferably 20mm with 10mm radius to ensure comparability.
 * A load-cell amplifier (NAU7802). I am using [this one](https://www.sparkfun.com/products/15242) but [this one](https://www.adafruit.com/product/4538) should work as well. Attention! This software is not compatible with the commonly used HX711 amplifier. 
 * [An MCP2221A USB board](https://www.adafruit.com/product/4471) to connect the amplifier to a computer via USB.
 * A cable to connect the MCP2221A and the NAU7802 (Qwiic/STEMMA QT compatible JST-SH cable).
+See also [this blog](https://philaudio.wordpress.com/projects/climbing/).
 
 ### Which software is required?
 ![Screenshot of the measurement view](https://philaudio.files.wordpress.com/2023/01/screenshot1-1.png)
