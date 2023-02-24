@@ -2,6 +2,7 @@
 doc/
 results/
 __stuff__/
+_release/
 .vscode/launch.json
 build/
 dist/
