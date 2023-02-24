@@ -15,6 +15,7 @@ There is a research paper of Dave Giles et al. (Lattice Training Ltd.) that desc
 * A load-cell amplifier (NAU7802). I am using [this one](https://www.sparkfun.com/products/15242) but [this one](https://www.adafruit.com/product/4538) should work as well. Attention! This software is not compatible with the commonly used HX711 amplifier. 
 * [An MCP2221A USB board](https://www.adafruit.com/product/4471) to connect the amplifier to a computer via USB.
 * A cable to connect the MCP2221A and the NAU7802 (Qwiic/STEMMA QT compatible JST-SH cable).
+
 See also [this blog](https://philaudio.wordpress.com/projects/climbing/).
 
 ### Which software is required?
