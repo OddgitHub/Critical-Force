@@ -33,6 +33,8 @@ If you want to contribute to the source code, fix some bugs, or change the backg
 
 The app is started via `python start.py`.
 
+You can compile an executable/application for windows/mac via `pyinstaller start_win.spec` or `pyinstaller start_mac.spec`.
+
 # License
 Copyright 2023 Dr.-Ing. Philipp Bulling
 	
