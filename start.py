@@ -18,7 +18,7 @@
     along with "Critical Force".  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import sys, os
+import sys, os, logging
 
 from ui.MainWindow import MainWindow
 from PySide6.QtWidgets import QApplication
@@ -28,6 +28,23 @@ from platformdirs import user_data_dir, user_documents_dir
 from shutil import copy
 
 from util.preferencesHandling import setWorkingDirectory
+
+def prepareLogger():
+    if os.path.exists(Params.logFile.value):
+        os.remove(Params.logFile.value)
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    file_handler = logging.FileHandler(Params.logFile.value)
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)    
+    logger.addHandler(file_handler)
+
+    def log_unhandled_exceptions(type, value, traceback):
+        logger.exception("Unhandled exception: ", exc_info=(type, value, traceback))
+
+    sys.excepthook = log_unhandled_exceptions
 
 def prepareSettingsFiles():
     basedir = os.path.dirname(__file__)
@@ -42,6 +59,7 @@ def prepareSettingsFiles():
         setWorkingDirectory(user_documents_dir())
 
 if __name__=='__main__':
+    prepareLogger()
     prepareSettingsFiles()
 
     app = QApplication(sys.argv)

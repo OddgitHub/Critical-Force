@@ -34,6 +34,7 @@ class Params(Enum):
     calibrationFile = os.path.join(datadir, 'calibration.json')
     preferencesFile = os.path.join(datadir, 'preferences.json')
     lastWorkingDirFile = os.path.join(datadir, 'lastworkingdir.json')
+    logFile = os.path.join(datadir, 'debug.log')
 
     workoutCfgFile = os.path.join(basedir, 'settings/workouts.csv')
     fileClickHi = os.path.join(basedir, 'raw/clickhi.wav')
@@ -41,4 +42,4 @@ class Params(Enum):
     appIcon = os.path.join(basedir, 'raw/icon.ico')
     appName = APPNAME
     appAuthor = APPAUTHOR
-    version = '1.1.0'
+    version = '1.2.0'
