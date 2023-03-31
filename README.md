@@ -25,7 +25,7 @@ This software contains everything you need, to connect to the load-cell, run a w
 
 #### Use the software
 If you want to use the software, you can download the latest release here:
-* [Executable for Windows (64bit)](https://github.com/OddgitHub/Critical-Force/releases/download/v1.1.0/Critical.Force.exe)
+* [Executable for Windows (64bit)](https://github.com/OddgitHub/Critical-Force/releases/download/v1.2.0/Critical.Force.exe)
 * [Application for Macs with Apple M chips](https://github.com/OddgitHub/Critical-Force/releases/download/v1.1.0/Critical.Force.app.zip) (unzip and allow app start)
 
 #### Contribute to the source code
