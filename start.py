@@ -30,8 +30,7 @@ from shutil import copy
 from util.preferencesHandling import setWorkingDirectory
 
 def prepareLogger():
-    if os.path.exists(Params.logFile.value):
-        os.remove(Params.logFile.value)
+    open(Params.logFile.value, 'w').close()
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
