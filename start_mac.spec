@@ -26,7 +26,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='Critical Force',
+    name='CriticalForce',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -46,11 +46,11 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='Critical Force',
+    name='CriticalForce',
 )
 app = BUNDLE(
     coll,
-    name='Critical Force.app',
+    name='CriticalForce.app',
     icon='raw/icon.icns',
     bundle_identifier=None,
 )
