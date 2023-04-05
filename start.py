@@ -45,7 +45,7 @@ def prepareLogger():
 
     sys.excepthook = log_unhandled_exceptions
 
-def prepareSettingsFiles():
+def prepareUserDirectory():
     basedir = os.path.dirname(__file__)
     datadir = user_data_dir(Params.appName.value, Params.appAuthor.value)
     if not os.path.exists(datadir):
@@ -58,8 +58,8 @@ def prepareSettingsFiles():
         setWorkingDirectory(user_documents_dir())
 
 if __name__=='__main__':
+    prepareUserDirectory()
     prepareLogger()
-    prepareSettingsFiles()
 
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(Params.appIcon.value))

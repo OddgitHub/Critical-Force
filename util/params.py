@@ -42,4 +42,4 @@ class Params(Enum):
     appIcon = os.path.join(basedir, 'raw/icon.ico')
     appName = APPNAME
     appAuthor = APPAUTHOR
-    version = '1.2.0'
+    version = '1.2.1'
