@@ -26,7 +26,8 @@ This software contains everything you need, to connect to the load-cell, run a w
 #### Use the software
 If you want to use the software, you can download the latest release here:
 * [Executable for Windows (64bit)](https://github.com/OddgitHub/Critical-Force/releases/download/v1.2.1/CriticalForce.exe)
-* [Application for Macs with Intel chips](https://github.com/OddgitHub/Critical-Force/releases/download/v1.2.1/CriticalForce.app.zip) (unzip and allow app start)
+* [Application for Macs with Intel chips](https://github.com/OddgitHub/Critical-Force/releases/download/v1.2.1/CriticalForce.app.zip) (allow app start)
+* [Application for Macs with Apple M chips](https://github.com/OddgitHub/Critical-Force/releases/download/v1.2.1/CriticalForceM.app.zip) (allow app start)
 
 #### Contribute to the source code
 If you want to contribute to the source code, fix some bugs, or change the background color to pink, you need Python >=3.9. I've developed the software with version 3.11. You can use the [requirements.txt](requirements.txt) file to install the required packages with `pip install -r requirements.txt`.
