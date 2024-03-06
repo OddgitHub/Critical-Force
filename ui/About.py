@@ -37,10 +37,10 @@ class AboutWindow(QWidget):
         linkLabel.setOpenExternalLinks(True)
 
         licenseLabel = QLabel("The graphical user interface was built with PySide6 and PyQtGraph. The Circuit Pyhton driver \"cedargrove_nau7802\" is used to interface the NAU7802 ADC.\n\n"
-            "If you encounter any issues, please reach out to philippbulling@gmail.com.")
+            "If you encounter any issues, please reach out to philipp.bulling@hs-esslingen.de.")
         licenseLabel.setWordWrap(True)
 
-        nameLabel = QLabel("Copyright 2023 Dr.-Ing. Philipp Bulling")
+        nameLabel = QLabel("Copyright 2024 Dr.-Ing. Philipp Bulling")
         versionLabel = QLabel("Software Version: " + Params.version.value)
 
         layout.addWidget(aboutLabel)

@@ -37,7 +37,7 @@ The app is started via `python start.py`.
 You can compile an executable/application for windows/mac via `pyinstaller start_win.spec` or `pyinstaller start_mac.spec`.
 
 # License
-Copyright 2023 Dr.-Ing. Philipp Bulling
+Copyright 2024 Dr.-Ing. Philipp Bulling
 	
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

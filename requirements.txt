@@ -7,9 +7,9 @@ Adafruit-PlatformDetect==3.38.0
 Adafruit-PureIO==1.1.9
 hidapi==0.12.0.post2
 numpy
-playsound==1.2.2
+psychopy
 PyObjC; sys_platform == 'darwin'
 platformdirs
 pyinstaller
 pyqtgraph
-PySide6==6.4.2
+PySide6==6.6.2

@@ -21,12 +21,15 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
 import pyqtgraph as pg
-from playsound import playsound
+
+from psychopy import prefs
+prefs.hardware['audioLib'] = ['ptb']
+from psychopy import sound
+from psychopy import logging
+logging.console.setLevel(logging.ERROR)
+
 import numpy as np
 import time, datetime
-
-from threading import Thread
-from threading import Event
 
 from ui.MeasurementGui import Ui_Form
 from util.repeatedTimer import RepeatedTimer
@@ -117,34 +120,16 @@ class MeasurementCtrl(QWidget):
         #========================================
         # Audio handling
         #========================================
-        self.stopAudioThreadEvent = Event()
-        #######################################################################
-        # TODO: Do it like this, as soon as PySide6.5.0 is available:
-        #self.soundHi = QSoundEffect(parent) # parent = MainWindow
-        #self.soundHi.setSource(QUrl.fromLocalFile(Params.fileClickHi.value))
-        #self.soundHi.setVolume(1.0)
-        #######################################################################
-        self.playSndHiEvent = Event()
-        self.playSndLoEvent = Event()
+        self.clickHi = sound.Sound(value='E', secs=0.1, octave=5)
+        self.clickLo = sound.Sound(value='C', secs=0.1, octave=5)
 
         # Start a timer that is only used for the tare display
         self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
-    #========================================
-    # Callback functions
-    #========================================
-    def onAudioPlayback(self, stopEvent, playHi, playLo):
-        while(True):
-            if stopEvent.is_set():
-                stopEvent.clear()
-                break
-            if playHi.is_set():
-                playHi.clear()
-                playsound(Params.fileClickHi.value)
-            if playLo.is_set():
-                playLo.clear()
-                playsound(Params.fileClickLo.value)
-            time.sleep(0.001) # Necessary to reduce priority of this thread?!
+        ##################################################
+        # Only for debugging resons.
+        self.OLD_TIME = time.time()
+        ##################################################
 
     def onStartMeasurement(self):
         if not self.running:
@@ -156,16 +141,13 @@ class MeasurementCtrl(QWidget):
             self.weightSpinBox.setEnabled(False)
             self.tareButton.setEnabled(False)
 
-            self.audioThread = Thread(target=self.onAudioPlayback, args=(self.stopAudioThreadEvent, self.playSndHiEvent, self.playSndLoEvent))
-            self.audioThread.start()
             self.measurementTimer = RepeatedTimer(1/self.fsMeas, self.onMeasurementCallback)
+
             self.running = True
 
     def onStopMeasurement(self):
         if self.running:
             self.measurementTimer.stop()
-            self.stopAudioThreadEvent.set()
-            self.audioThread.join()
             self.running = False
 
             self.measCnt = 0
@@ -212,10 +194,19 @@ class MeasurementCtrl(QWidget):
 
                 # Set the events for the click-playback
                 if secCnt > 0:
+                    self.clickHi.stop()
+                    self.clickLo.stop()
                     if (self.lookupTable[secCnt] > self.lookupTable[secCnt-1]):
-                        self.playSndHiEvent.set()
+                        self.clickHi.play()
                     elif (self.lookupTable[secCnt] < self.lookupTable[secCnt-1]) or (self.countdown[secCnt] < 4 and self.lookupTable[secCnt] == 0):
-                        self.playSndLoEvent.set()
+                        self.clickLo.play()
+
+                    ##################################################
+                    # Only for debugging reasons: Print elapsed time.
+                    NEW_TIME = time.time()
+                    print("Elapsed time: " + str(round(NEW_TIME - self.OLD_TIME, 2)) + " s")
+                    self.OLD_TIME = NEW_TIME
+                    ##################################################
                     
                     # Increase the repetition- and set counter
                     if self.countdown[secCnt] == 1 and self.lookupTable[secCnt] == 0:

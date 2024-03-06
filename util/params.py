@@ -37,9 +37,7 @@ class Params(Enum):
     logFile = os.path.join(datadir, 'debug.log')
 
     workoutCfgFile = os.path.join(basedir, 'settings/workouts.csv')
-    fileClickHi = os.path.join(basedir, 'raw/clickhi.wav')
-    fileClickLo = os.path.join(basedir, 'raw/clicklo.wav')
     appIcon = os.path.join(basedir, 'raw/icon.ico')
     appName = APPNAME
     appAuthor = APPAUTHOR
-    version = '1.2.1'
+    version = '1.3.0'
