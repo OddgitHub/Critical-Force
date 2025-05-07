@@ -17,7 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with "Critical Force".  If not, see <http://www.gnu.org/licenses/>.
 '''
-
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
 import pyqtgraph as pg
