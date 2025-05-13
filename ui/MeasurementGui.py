@@ -116,6 +116,12 @@ class Ui_Form(object):
         self.tareLabel.setFont(font)
         self.tareLabel.setAlignment(Qt.AlignCenter)
 
+        self.tareLabel_2 = QLabel(Form)
+        self.tareLabel_2.setObjectName(u"tareLabel")
+        self.tareLabel_2.setMinimumSize(QSize(70, 0))
+        self.tareLabel_2.setFont(font)
+        self.tareLabel_2.setAlignment(Qt.AlignCenter)
+
         self.verticalLayout_3.addWidget(self.tareLabel)
 
         self.tareButton = QPushButton(Form)
@@ -157,6 +163,7 @@ class Ui_Form(object):
         self.stopButton.setText(QCoreApplication.translate("Form", u"Stop", None))
         self.workoutLabel.setText(QCoreApplication.translate("Form", u"Stopped", None))
         self.tareLabel.setText(QCoreApplication.translate("Form", u"0kg", None))
+        self.tareLabel_2.setText(QCoreApplication.translate("Form", u"0kg", None))
         self.tareButton.setText(QCoreApplication.translate("Form", u"Tare", None))
     # retranslateUi
 
