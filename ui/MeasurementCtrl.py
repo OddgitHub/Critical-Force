@@ -278,7 +278,9 @@ class MeasurementCtrl(QWidget):
 
         # Plot raw measurement data
         pen = pg.mkPen(color=(150,150,150), width=2)
-        self.graphicsView_1.plot(t, measDataPercentBw_1, name="Raw Data", pen=pen)
+        pen_2 = pg.mkPen(color=(180,180,180), width=2) 
+        self.graphicsView_1.plot(t, measDataPercentBw_1, name="Raw Data_1", pen=pen)
+        self.graphicsView_1.plot(t, measDataPercentBw_2, name="Raw Data_2", pen=pen_2)
 
         # Plot mean of each repetition block
         pen = pg.mkPen(color=(80,80,80), width=2)
@@ -306,6 +308,9 @@ class MeasurementCtrl(QWidget):
             peak_time_2 = t[np.argmax(measDataPercentBw_2)]
 
             pen = pg.mkPen(color=(0, 0, 255), width=2)
+            #RFD Development
+            #self.graphicsView_1.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
+            #self.graphicsView_1.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
             self.graphicsView_1.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
             self.graphicsView_1.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
             self.graphicsView_1.plot([peak_time_2], [max_peak_2], pen=None, symbol='o', symbolBrush='b', name="Peak Force_2")
