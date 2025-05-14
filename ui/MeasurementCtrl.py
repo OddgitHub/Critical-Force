@@ -277,9 +277,11 @@ class MeasurementCtrl(QWidget):
         self.graphicsView_1.addLegend().anchor(itemPos=(1,0), parentPos=(1,0), offset=(-10,10))
 
         # Plot raw measurement data
-        pen = pg.mkPen(color=(150,150,150), width=2)
-        pen_2 = pg.mkPen(color=(180,180,180), width=2) 
+        pen = pg.mkPen(color=(150,150,150), width=2) 
         self.graphicsView_1.plot(t, measDataPercentBw_1, name="Raw Data_1", pen=pen)
+
+        #if bedingung vom Speed test
+        pen_2 = pg.mkPen(color=(180,180,180), width=2)
         self.graphicsView_1.plot(t, measDataPercentBw_2, name="Raw Data_2", pen=pen_2)
 
         # Plot mean of each repetition block
