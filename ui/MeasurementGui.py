@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'MeasurementGui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.2
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(542, 488)
+        Form.resize(541, 488)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout_2 = QHBoxLayout()
@@ -116,13 +116,12 @@ class Ui_Form(object):
         self.tareLabel.setFont(font)
         self.tareLabel.setAlignment(Qt.AlignCenter)
 
-        self.tareLabel_2 = QLabel(Form)
-        self.tareLabel_2.setObjectName(u"tareLabel")
-        self.tareLabel_2.setMinimumSize(QSize(70, 0))
-        self.tareLabel_2.setFont(font)
-        self.tareLabel_2.setAlignment(Qt.AlignCenter)
-
         self.verticalLayout_3.addWidget(self.tareLabel)
+
+        self.test = QLabel(Form)
+        self.test.setObjectName(u"test")
+
+        self.verticalLayout_3.addWidget(self.test)
 
         self.tareButton = QPushButton(Form)
         self.tareButton.setObjectName(u"tareButton")
@@ -163,7 +162,7 @@ class Ui_Form(object):
         self.stopButton.setText(QCoreApplication.translate("Form", u"Stop", None))
         self.workoutLabel.setText(QCoreApplication.translate("Form", u"Stopped", None))
         self.tareLabel.setText(QCoreApplication.translate("Form", u"0kg", None))
-        self.tareLabel_2.setText(QCoreApplication.translate("Form", u"0kg", None))
+        self.test.setText(QCoreApplication.translate("Form", u"TextLabel", None))
         self.tareButton.setText(QCoreApplication.translate("Form", u"Tare", None))
     # retranslateUi
 

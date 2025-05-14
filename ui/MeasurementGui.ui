@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
+    <width>541</width>
     <height>488</height>
    </rect>
   </property>
@@ -123,7 +123,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
@@ -145,6 +145,13 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="test">
+         <property name="text">
+          <string>TextLabel</string>
          </property>
         </widget>
        </item>
