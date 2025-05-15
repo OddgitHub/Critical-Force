@@ -59,18 +59,20 @@ class MeasurementCtrl(QWidget):
         self.running = False
         self.lookupTable = 0
         self.countdown = 0
-        self.numMeasSamples = 0
+        self.numMeasSamples_1 = 0
+        self.numMeasSamples_2 = 0
         self.numSets = 0
         self.numRepsPerSet = 0
         self.measCnt = 0
         self.secCnt = 0
         self.repCnt = 0
         self.setCnt = 1
-        self.currentWeight = 0
+        self.currentWeight_1 = 0
         self.tare = 0
 
         # Data, that will be stored in result file
-        self.measDataKg = np.asarray([])
+        self.measDataKg_1 = np.asarray([])
+        self.measDataKg_2 = np.asarray([])
         self.timestamp = 'unknown'
         self.bodyWeight = form.bodyWeightSpinBox.value()
         self.criticalForce = 0
@@ -96,11 +98,12 @@ class MeasurementCtrl(QWidget):
         self.workoutComboBox = form.workoutComboBox
         self.workoutLabel = form.workoutLabel
         self.weightSpinBox = form.bodyWeightSpinBox
-        self.graphicsView = form.graphicsView
+        self.graphicsView_1 = form.graphicsView
         self.tareButton = form.tareButton
-        self.tareLabel = form.tareLabel
+        self.tareLabel_1 = form.tareLabel
+        self.tareLabel_2 = form.tareLabel_2
 
-        self.graphicsView.setBackground('w')
+        self.graphicsView_1.setBackground('w')
 
         #========================================
         # Workout handling
@@ -133,8 +136,10 @@ class MeasurementCtrl(QWidget):
     def onStartMeasurement(self):
         if not self.running:
             self.tareTimer.stop()
-            self.numMeasSamples = len(self.lookupTable) * self.fsMeas
-            self.measDataKg = np.zeros(self.numMeasSamples)
+            self.numMeasSamples_1 = len(self.lookupTable) * self.fsMeas
+            self.numMeasSamples_2 = len(self.lookupTable) * self.fsMeas
+            self.measDataKg_1 = np.zeros(self.numMeasSamples_1)
+            self.measDataKg_2 = np.zeros(self.numMeasSamples_2)
 
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
@@ -169,14 +174,17 @@ class MeasurementCtrl(QWidget):
     def onMeasurementCallback(self):
         secCnt = self.secCnt
 
-        if self.measCnt >= self.numMeasSamples:
+        if self.measCnt >= self.numMeasSamples_1:
             # Measurement finished
             self.measFinished.trigger()
         else:
             # Read value from sensor and save it to array
-            valueKg = self.weightSensor.getValueInKg() - self.tare
-            self.tareLabel.setText(str(np.around(valueKg, decimals=2)) + 'kg')
-            self.measDataKg[self.measCnt] = valueKg
+            valueKg_1 = self.weightSensor.getValueInKg_1() - self.tare
+            valueKg_2 = self.weightSensor.getValueInKg_2() - self.tare
+            self.tareLabel_1.setText(str(np.around(valueKg_1, decimals=2)) + 'kg')
+            self.tareLabel_2.setText(str(np.around(valueKg_2, decimals=2)) + 'kg')
+            self.measDataKg_1[self.measCnt] = valueKg_1
+            self.measDataKg_2[self.measCnt] = valueKg_2
 
             # Workout timer handling
             if self.measCnt % self.fsMeas == 0:
@@ -221,12 +229,15 @@ class MeasurementCtrl(QWidget):
             self.measCnt += 1	
 
     def onTareVisualization(self):
-        self.currentWeight = self.weightSensor.getValueInKg()
-        weightString = str(np.around(self.currentWeight - self.tare, decimals=2))
-        self.tareLabel.setText(weightString + 'kg')
+        self.currentWeight_1 = self.weightSensor.getValueInKg_1()
+        self.currentWeight_2 = self.weightSensor.getValueInKg_2()
+        weightString_1 = str(np.around(self.currentWeight_1 - self.tare, decimals=2))
+        weightString_2 = str(np.around(self.currentWeight_2 - self.tare, decimals=2))
+        self.tareLabel_1.setText(weightString_1 + 'kg')
+        self.tareLabel_2.setText(weightString_2 + 'kg')
 
     def onTareButtonClicked(self):
-        self.tare = self.currentWeight
+        self.tare = self.currentWeight_1
 
     def onWorkoutChanged(self, id):
         self.workoutDescriptionLabel.setText(self.workoutHandler.getWorkoutDescription(id))
@@ -236,7 +247,7 @@ class MeasurementCtrl(QWidget):
 
     def onBodyWeightChanged(self, value):
         self.bodyWeight = value
-        if len(self.measDataKg) > 0:
+        if len(self.measDataKg_1) > 0:
             self.computeResultAndPlot()
 
     def onCloseApplication(self):
@@ -248,27 +259,33 @@ class MeasurementCtrl(QWidget):
     #========================================
     def computeResultAndPlot(self):
         # Compute result (force as percentage of body weight)
-        measDataPercentBw = self.measDataKg / self.bodyWeight * 100
-
+        measDataPercentBw_1 = self.measDataKg_1 / self.bodyWeight * 100
+        measDataPercentBw_2 = self.measDataKg_2 / self.bodyWeight * 100
         # Compensate delay between audio clicks and measurement
-        measDataPercentBw = np.roll(measDataPercentBw, -self.delayInSamples)
-        measDataPercentBw[-self.delayInSamples:] = 0
+        measDataPercentBw_1 = np.roll(measDataPercentBw_1, -self.delayInSamples)
+        measDataPercentBw_2 = np.roll(measDataPercentBw_2, -self.delayInSamples)
+        measDataPercentBw_1[-self.delayInSamples:] = 0
+        measDataPercentBw_2[-self.delayInSamples:] = 0
 
         # Compute the mean force during repetition active times
-        repMean = computeRepetitionMean(measDataPercentBw, self.lookupTable, self.fsMeas)
+        repMean = computeRepetitionMean(measDataPercentBw_1, self.lookupTable, self.fsMeas)
         
         # Prepare plot
-        t = np.linspace(0, len(measDataPercentBw) / self.fsMeas, len(measDataPercentBw))
-        self.graphicsView.clear()
-        self.graphicsView.addLegend().anchor(itemPos=(1,0), parentPos=(1,0), offset=(-10,10))
+        t = np.linspace(0, len(measDataPercentBw_1) / self.fsMeas, len(measDataPercentBw_1))
+        self.graphicsView_1.clear()
+        self.graphicsView_1.addLegend().anchor(itemPos=(1,0), parentPos=(1,0), offset=(-10,10))
 
         # Plot raw measurement data
-        pen = pg.mkPen(color=(150,150,150), width=2)
-        self.graphicsView.plot(t, measDataPercentBw, name="Raw Data", pen=pen)
+        pen = pg.mkPen(color=(150,150,150), width=2) 
+        self.graphicsView_1.plot(t, measDataPercentBw_1, name="Raw Data_1", pen=pen)
+
+        #if bedingung vom Speed test
+        pen_2 = pg.mkPen(color=(180,180,180), width=2)
+        self.graphicsView_1.plot(t, measDataPercentBw_2, name="Raw Data_2", pen=pen_2)
 
         # Plot mean of each repetition block
         pen = pg.mkPen(color=(80,80,80), width=2)
-        self.graphicsView.plot(t, repMean, name="Rep. Mean", pen=pen)
+        self.graphicsView_1.plot(t, repMean, name="Rep. Mean", pen=pen)
 
         # Compute the critical force, if necessary
         cf = 0
@@ -281,16 +298,34 @@ class MeasurementCtrl(QWidget):
             W = np.around(W, decimals = 2)
 
             pen = pg.mkPen(color=(0,180,0), width=2)
-            self.graphicsView.plot([t[0],t[-1]], [cf,cf], name="CF = " + str(cf) + " %BW | W\' = " + str(W) + " %BWs", pen=pen)
+            self.graphicsView_1.plot([t[0],t[-1]], [cf,cf], name="CF = " + str(cf) + " %BW | W\' = " + str(W) + " %BWs", pen=pen)
+        ### NEU: Schnellkrafttest
+        workout_name = self.workoutHandler.getWorkoutName(self.selectedWorkoutId)
+        if workout_name == 'Speed test':
+            # Beispielhafte Logik: Maxwert innerhalb einer kurzen Zeitspanne suchen
+            max_peak_1 = np.max(measDataPercentBw_1)
+            peak_time_1 = t[np.argmax(measDataPercentBw_1)]
+            max_peak_2 = np.max(measDataPercentBw_2)
+            peak_time_2 = t[np.argmax(measDataPercentBw_2)]
+
+            pen = pg.mkPen(color=(0, 0, 255), width=2)
+            #RFD Development
+            #self.graphicsView_1.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
+            #self.graphicsView_1.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
+            self.graphicsView_1.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
+            self.graphicsView_1.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
+            self.graphicsView_1.plot([peak_time_2], [max_peak_2], pen=None, symbol='o', symbolBrush='b', name="Peak Force_2")
+            self.graphicsView_1.plot([t[0], t[-1]], [max_peak_2, max_peak_2], pen=pen, name="Max. Power_2 = " + str(np.around(max_peak_2, 2)) + " %BW")        
+        ### ENDE: Schnellkrafttest
 
         # Plot maximum force
         pen = pg.mkPen(color=(180,0,0), width=2)
         mf = computeMaxForce(repMean)
-        self.graphicsView.plot([t[0],t[-1]], [mf,mf], name="Max. Force = " + str(mf) + " %BW", pen=pen)
+        self.graphicsView_1.plot([t[0],t[-1]], [mf,mf], name="Max. Force = " + str(mf) + " %BW", pen=pen)
 
-        self.graphicsView.showGrid(x=True, y=True)
-        self.graphicsView.setLabel('left', "%BW")
-        self.graphicsView.setLabel('bottom', "Time [sec]")
+        self.graphicsView_1.showGrid(x=True, y=True)
+        self.graphicsView_1.setLabel('left', "%BW")
+        self.graphicsView_1.setLabel('bottom', "Time [sec]")
 
         # Store result in class member variables
         self.criticalForce = cf
@@ -308,7 +343,8 @@ class MeasurementCtrl(QWidget):
         data['criticalForce'] = float(self.criticalForce)
         data['wPrime'] = float(self.wPrime)
         data['maxForce'] = float(self.maxForce)
-        data['measDataKg'] = self.measDataKg.tolist()
+        data['measDataKg_1'] = self.measDataKg_1.tolist()
+        data['measDataKg_2'] = self.measDataKg_2.tolist()
         return data
 
     def setData(self, data, reset=False):
@@ -316,12 +352,13 @@ class MeasurementCtrl(QWidget):
         workoutId = self.workoutHandler.getIdFromName(self.workoutName)
         self.workoutComboBox.setCurrentIndex(workoutId)
         self.timestamp = data['timestamp']
-        self.measDataKg = np.asarray(data['measDataKg'])
+        self.measDataKg_1 = np.asarray(data['measDataKg_1'])
+        self.measDataKg_2 = np.asarray(data['measDataKg_2'])
 
         # The order is critical, always do this at the end
         self.weightSpinBox.setValue(data['weight'])
 
-        if not reset and len(self.measDataKg) > 0:
+        if not reset and len(self.measDataKg_1) > 0:
             # Since critical force, W' and max force will be re-calculated in 
             # the following  function, it's not necessary to load them here.
             self.computeResultAndPlot()
@@ -330,5 +367,5 @@ class MeasurementCtrl(QWidget):
             self.criticalForce = 0
             self.wPrime = 0
             self.maxForce = 0
-            self.graphicsView.clear()
+            self.graphicsView_1.clear()
 

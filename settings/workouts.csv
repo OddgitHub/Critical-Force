@@ -2,3 +2,4 @@ Name;Description;Sets;Set Pause;Repetitions;Repetition Active;Repetition Pause
 Critical Force Test;The classical finger flexor critical force test (ff-CF). 7 sec on, 3 sec off for 4 min in total. Pull as hard as you can.;1;5;24;7;3
 Max Isometric Finger Strength;Test the maximal isometric finger strength (MIFS). Hang for 5 sec with 120 sec pause (3 sets).;3;120;1;5;0
 Warm-up;This can be used as warm-up for the critical force test. Switch hands after each repetition (10 min).;10;35;2;10;5
+Speed test;This is a test;2;120;1;5;0
