@@ -25,7 +25,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(541, 488)
+        Form.resize(595, 488)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout_2 = QHBoxLayout()
@@ -65,6 +65,13 @@ class Ui_Form(object):
         self.line_3.setFrameShadow(QFrame.Sunken)
 
         self.verticalLayout.addWidget(self.line_3)
+
+        self.line_4 = QFrame(Form)
+        self.line_4.setObjectName(u"line_4")
+        self.line_4.setFrameShape(QFrame.HLine)
+        self.line_4.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout.addWidget(self.line_4)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -110,37 +117,52 @@ class Ui_Form(object):
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.tareLabel = QLabel(Form)
-        self.tareLabel.setObjectName(u"tareLabel")
-        self.tareLabel.setMinimumSize(QSize(70, 0))
-        self.tareLabel.setFont(font)
-        self.tareLabel.setAlignment(Qt.AlignCenter)
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.tareLabel_1 = QLabel(Form)
+        self.tareLabel_1.setObjectName(u"tareLabel_1")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tareLabel_1.sizePolicy().hasHeightForWidth())
+        self.tareLabel_1.setSizePolicy(sizePolicy)
+        font1 = QFont()
+        font1.setPointSize(15)
+        self.tareLabel_1.setFont(font1)
+        self.tareLabel_1.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_3.addWidget(self.tareLabel)
+        self.horizontalLayout_3.addWidget(self.tareLabel_1)
 
-        self.test = QLabel(Form)
-        self.test.setObjectName(u"test")
+        self.tareLabel_2 = QLabel(Form)
+        self.tareLabel_2.setObjectName(u"tareLabel_2")
+        self.tareLabel_2.setFont(font1)
+        self.tareLabel_2.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_3.addWidget(self.test)
+        self.horizontalLayout_3.addWidget(self.tareLabel_2)
 
-        self.tareButton = QPushButton(Form)
-        self.tareButton.setObjectName(u"tareButton")
-        self.tareButton.setMinimumSize(QSize(70, 0))
 
-        self.verticalLayout_3.addWidget(self.tareButton)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.tareButton_1 = QPushButton(Form)
+        self.tareButton_1.setObjectName(u"tareButton_1")
+
+        self.horizontalLayout_4.addWidget(self.tareButton_1)
+
+        self.tareButton_2 = QPushButton(Form)
+        self.tareButton_2.setObjectName(u"tareButton_2")
+
+        self.horizontalLayout_4.addWidget(self.tareButton_2)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_4)
 
 
         self.horizontalLayout.addLayout(self.verticalLayout_3)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout)
-
-        self.line_4 = QFrame(Form)
-        self.line_4.setObjectName(u"line_4")
-        self.line_4.setFrameShape(QFrame.HLine)
-        self.line_4.setFrameShadow(QFrame.Sunken)
-
-        self.verticalLayout.addWidget(self.line_4)
 
         self.graphicsView = PlotWidget(Form)
         self.graphicsView.setObjectName(u"graphicsView")
@@ -161,8 +183,9 @@ class Ui_Form(object):
         self.startButton.setText(QCoreApplication.translate("Form", u"Start", None))
         self.stopButton.setText(QCoreApplication.translate("Form", u"Stop", None))
         self.workoutLabel.setText(QCoreApplication.translate("Form", u"Stopped", None))
-        self.tareLabel.setText(QCoreApplication.translate("Form", u"0kg", None))
-        self.test.setText(QCoreApplication.translate("Form", u"TextLabel", None))
-        self.tareButton.setText(QCoreApplication.translate("Form", u"Tare", None))
+        self.tareLabel_1.setText(QCoreApplication.translate("Form", u"0kg", None))
+        self.tareLabel_2.setText(QCoreApplication.translate("Form", u"0kg", None))
+        self.tareButton_1.setText(QCoreApplication.translate("Form", u"Tare 1", None))
+        self.tareButton_2.setText(QCoreApplication.translate("Form", u"Tare 2", None))
     # retranslateUi
 
