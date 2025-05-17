@@ -55,7 +55,8 @@ class MeasurementCtrl(QWidget):
         self.delayInSamples = round(pref['delayCompensation']/1000 * self.fsMeas)
 
         #========================================
-        # Init class members
+        # Init class members1,5
+        
         #========================================   
         self.running = False
         self.lookupTable = 0
@@ -69,7 +70,8 @@ class MeasurementCtrl(QWidget):
         self.repCnt = 0
         self.setCnt = 1
         self.currentWeight_1 = 0
-        self.tare = 0
+        self.tare_1 = 0
+        self.tare_2 = 0
 
         # Data, that will be stored in result file
         self.measDataKg_1 = np.asarray([])
@@ -85,7 +87,8 @@ class MeasurementCtrl(QWidget):
         #========================================     
         form.startButton.pressed.connect(self.onStartMeasurement)
         form.stopButton.pressed.connect(self.onStopMeasurement)
-        form.tareButton_1.pressed.connect(self.onTareButtonClicked)
+        form.tareButton_1.pressed.connect(self.onTareButtonClicked_1)
+        form.tareButton_2.pressed.connect(self.onTareButtonClicked_2)
         form.bodyWeightSpinBox.valueChanged.connect(self.onBodyWeightChanged)
 
         # Action, triggered when measurement is finished
@@ -183,8 +186,8 @@ class MeasurementCtrl(QWidget):
             self.measFinished.trigger()
         else:
             # Read value from sensor and save it to array
-            valueKg_1 = self.weightSensor.getValueInKg_1() - self.tare
-            valueKg_2 = self.weightSensor.getValueInKg_2() - self.tare
+            valueKg_1 = self.weightSensor.getValueInKg_1() - self.tare_1
+            valueKg_2 = self.weightSensor.getValueInKg_2() - self.tare_2
             self.tareLabel_1.setText(str(np.around(valueKg_1, decimals=2)) + 'kg')
             self.tareLabel_2.setText(str(np.around(valueKg_2, decimals=2)) + 'kg')
             self.measDataKg_1[self.measCnt] = valueKg_1
@@ -235,13 +238,15 @@ class MeasurementCtrl(QWidget):
     def onTareVisualization(self):
         self.currentWeight_1 = self.weightSensor.getValueInKg_1()
         self.currentWeight_2 = self.weightSensor.getValueInKg_2()
-        weightString_1 = str(np.around(self.currentWeight_1 - self.tare, decimals=2))
-        weightString_2 = str(np.around(self.currentWeight_2 - self.tare, decimals=2))
+        weightString_1 = str(np.around(self.currentWeight_1 - self.tare_1, decimals=2))
+        weightString_2 = str(np.around(self.currentWeight_2 - self.tare_2, decimals=2))
         self.tareLabel_1.setText(weightString_1 + 'kg')
         self.tareLabel_2.setText(weightString_2 + 'kg')
 
-    def onTareButtonClicked(self):
-        self.tare = self.currentWeight_1
+    def onTareButtonClicked_1(self):
+        self.tare_1 = self.currentWeight_1
+    def onTareButtonClicked_2(self):
+        self.tare_2 = self.currentWeight_2
 
     def onWorkoutChanged(self, id):
         self.workoutDescriptionLabel.setText(self.workoutHandler.getWorkoutDescription(id))
