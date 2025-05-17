@@ -85,7 +85,7 @@ class MeasurementCtrl(QWidget):
         #========================================     
         form.startButton.pressed.connect(self.onStartMeasurement)
         form.stopButton.pressed.connect(self.onStopMeasurement)
-        form.tareButton.pressed.connect(self.onTareButtonClicked)
+        form.tareButton_1.pressed.connect(self.onTareButtonClicked)
         form.bodyWeightSpinBox.valueChanged.connect(self.onBodyWeightChanged)
 
         # Action, triggered when measurement is finished
@@ -100,8 +100,9 @@ class MeasurementCtrl(QWidget):
         self.workoutLabel = form.workoutLabel
         self.weightSpinBox = form.bodyWeightSpinBox
         self.graphicsView_1 = form.graphicsView
-        self.tareButton = form.tareButton
-        self.tareLabel_1 = form.tareLabel
+        self.tareButton_1 = form.tareButton_1
+        self.tareButton_2 = form.tareButton_2
+        self.tareLabel_1 =  form.tareLabel_1
         self.tareLabel_2 = form.tareLabel_2
 
         self.graphicsView_1.setBackground('w')
@@ -144,7 +145,8 @@ class MeasurementCtrl(QWidget):
 
             self.workoutComboBox.setEnabled(False)
             self.weightSpinBox.setEnabled(False)
-            self.tareButton.setEnabled(False)
+            self.tareButton_1.setEnabled(False)
+            self.tareButton_2.setEnabled(False)
 
             self.measurementTimer = RepeatedTimer(1/self.fsMeas, self.onMeasurementCallback)
 
@@ -165,7 +167,8 @@ class MeasurementCtrl(QWidget):
             
             self.workoutComboBox.setEnabled(True)
             self.weightSpinBox.setEnabled(True)
-            self.tareButton.setEnabled(True)
+            self.tareButton_1.setEnabled(True)
+            self.tareButton_2.setEnabled(True)
 
             self.tareTimer = RepeatedTimer(1/self.fsMeas, self.onTareVisualization)
 
@@ -280,10 +283,6 @@ class MeasurementCtrl(QWidget):
         pen = pg.mkPen(color=(150,150,150), width=2) 
         self.graphicsView_1.plot(t, measDataPercentBw_1, name="Raw Data_1", pen=pen)
 
-        #if bedingung vom Speed test
-        pen_2 = pg.mkPen(color=(180,180,180), width=2)
-        self.graphicsView_1.plot(t, measDataPercentBw_2, name="Raw Data_2", pen=pen_2)
-
         # Plot mean of each repetition block
         pen = pg.mkPen(color=(80,80,80), width=2)
         self.graphicsView_1.plot(t, repMean, name="Rep. Mean", pen=pen)
@@ -303,6 +302,9 @@ class MeasurementCtrl(QWidget):
         ### NEU: Schnellkrafttest
         workout_name = self.workoutHandler.getWorkoutName(self.selectedWorkoutId)
         if workout_name == 'Speed test':
+            #second scales
+            pen_2 = pg.mkPen(color=(0,0,0), width=2)
+            self.graphicsView_1.plot(t, measDataPercentBw_2, name="Raw Data_2", pen=pen_2)
             # Beispielhafte Logik: Maxwert innerhalb einer kurzen Zeitspanne suchen
             max_peak_1 = np.max(measDataPercentBw_1)
             peak_time_1 = t[np.argmax(measDataPercentBw_1)]
