@@ -20,6 +20,7 @@
 
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QDialog
 import pyqtgraph as pg
 
 from psychopy import prefs
@@ -32,10 +33,12 @@ import numpy as np
 import time, datetime
 
 from ui.MeasurementGui import Ui_Form
+from ui.SpeedtestGui import Ui_Dialog
 from util.repeatedTimer import RepeatedTimer
 from util.params import Params
 from util.workouts import WorkoutHandler
 from util.criticalForce import computeRepetitionMean, computeCriticalForceAndWPrime, computeMaxForce
+from util.Speed_test import analyse_measurements, acceleration
 from util.preferencesHandling import loadPreferences
 
 class MeasurementCtrl(QWidget):
@@ -304,29 +307,53 @@ class MeasurementCtrl(QWidget):
 
             pen = pg.mkPen(color=(0,180,0), width=2)
             self.graphicsView_1.plot([t[0],t[-1]], [cf,cf], name="CF = " + str(cf) + " %BW | W\' = " + str(W) + " %BWs", pen=pen)
-        ### NEU: Schnellkrafttest
+        
+        ################## speed test
+
         workout_name = self.workoutHandler.getWorkoutName(self.selectedWorkoutId)
         if workout_name == 'Speed test':
-            #second scales
-            pen_2 = pg.mkPen(color=(0,0,0), width=2)
-            self.graphicsView_1.plot(t, measDataPercentBw_2, name="Raw Data_2", pen=pen_2)
-            # Beispielhafte Logik: Maxwert innerhalb einer kurzen Zeitspanne suchen
+            
+            pen = pg.mkPen(color=(0, 0, 255), width=2)
+
+            #initalising new Window
+            self.speedtestWindow = QDialog(self)
+            self.speedtestUi = Ui_Dialog()
+            self.speedtestUi.setupUi(self.speedtestWindow)
+            self.speedtestWindow.setWindowTitle("Speedtest-Auswertung")
+            self.speedtestWindow.show()
+
+            #showing new Data
+            self.speedtestUi.graphicsView_2.plot(t, measDataPercentBw_1, name="Raw Data 1", pen=pen)
+            self.speedtestUi.graphicsView.plot(t, measDataPercentBw_2, name="Raw Data 2", pen=pen)
+
+            self.speedtestUi.graphicsView_2.addLegend().anchor(itemPos=(1,0), parentPos=(1,0), offset=(-10,10))
+            self.speedtestUi.graphicsView.addLegend().anchor(itemPos=(1,0), parentPos=(1,0), offset=(-10,10))
+            
+            # visualiziation of Max Power
             max_peak_1 = np.max(measDataPercentBw_1)
             peak_time_1 = t[np.argmax(measDataPercentBw_1)]
             max_peak_2 = np.max(measDataPercentBw_2)
             peak_time_2 = t[np.argmax(measDataPercentBw_2)]
+            self.speedtestUi.graphicsView_2.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
+            self.speedtestUi.graphicsView_2.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
+            self.speedtestUi.graphicsView.plot([peak_time_2], [max_peak_2], pen=None, symbol='o', symbolBrush='b', name="Peak Force_2")
+            self.speedtestUi.graphicsView.plot([t[0], t[-1]], [max_peak_2, max_peak_2], pen=pen, name="Max. Power_2 = " + str(np.around(max_peak_2, 2)) + " %BW")        
 
-            pen = pg.mkPen(color=(0, 0, 255), width=2)
-            #RFD Development
-            #self.graphicsView_1.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
-            #self.graphicsView_1.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
-            self.graphicsView_1.plot([peak_time_1], [max_peak_1], pen=None, symbol='o', symbolBrush='b', name="Peak Force_1")
-            self.graphicsView_1.plot([t[0], t[-1]], [max_peak_1, max_peak_1], pen=pen, name="Max. Power_1 = " + str(np.around(max_peak_1, 2)) + " %BW")
-            self.graphicsView_1.plot([peak_time_2], [max_peak_2], pen=None, symbol='o', symbolBrush='b', name="Peak Force_2")
-            self.graphicsView_1.plot([t[0], t[-1]], [max_peak_2, max_peak_2], pen=pen, name="Max. Power_2 = " + str(np.around(max_peak_2, 2)) + " %BW")        
-        ### ENDE: Schnellkrafttest
+            #starting point
 
-        # Plot maximum force
+            pen_2 = pg.mkPen(color=(0, 255, 255), width=2)
+
+            startingpointpulling, startpointpulling_value = analyse_measurements(measDataPercentBw_1, self.fsMeas)
+            self.speedtestUi.graphicsView_2.plot([startingpointpulling], [startpointpulling_value], pen=None, symbol='o', symbolBrush='g', name="Start of Pulling Point" + str(np.around(startingpointpulling/self.bodyWeight, 2)) + "kg")
+        
+            #visulazation of acceleration
+            max_force_in_kg = max_peak_1 / self.bodyWeight
+            max_acceleration_1 = acceleration(max_force_in_kg, self.bodyWeight)
+            self.speedtestUi.graphicsView_2.plot([0], [0], pen=None, symbol=None, name="Max. Acceleration = "  + str(max_acceleration_1) + "m/s²")
+        
+        ######################################  
+
+        # Plot maximum force 
         pen = pg.mkPen(color=(180,0,0), width=2)
         mf = computeMaxForce(repMean)
         self.graphicsView_1.plot([t[0],t[-1]], [mf,mf], name="Max. Force = " + str(mf) + " %BW", pen=pen)
