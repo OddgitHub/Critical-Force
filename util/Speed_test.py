@@ -11,7 +11,7 @@ def find_monotonic_rise_start(force_data):
         start_index = 0
     return start_index
 
-def analyse_measurements(force_data, sampling_rate=80):
+def analyse_measurements(force_data, sampling_rate=10):
     force_data = np.array(force_data)
     start_idx = find_monotonic_rise_start(force_data)
 
@@ -44,50 +44,41 @@ def computeSchnellkraftParameter(measData, lookupTable, sampleRate, bodyweight):
     max_acceleration = acceleration(max_force_in_kg_alltime, bodyweight)
 
     #RFD
-    RFD = RFD(startpointpulling_timepoint_alltime, peak_timepoint_alltime, peak_alltime, startpointpullingvalue_alltime)
+    rfd_value = RFD(startpointpulling_timepoint_alltime, peak_timepoint_alltime, peak_alltime, startpointpullingvalue_alltime)
     
     #compute Startingpoints and max. peaks
     lookupRsmpl = np.repeat(lookupTable, sampleRate)
-
-    assert(len(measData) == len(lookupRsmpl))
+    assert len(measData) == len(lookupRsmpl)
     numSamples = len(lookupRsmpl)
-  
-    ctr = 0
+
     indStart = 0
-    active = False
 
     allPeaks = []
     allPeaks_timepoint = []
     allStartingpoints = []
     allStartingpoints_timepoint = []
 
-    for i in range(1,numSamples):
+    for i in range(1, numSamples):
         diff = lookupRsmpl[i] - lookupRsmpl[i-1]
 
         if diff == 1:
             # New Active Time begins
             indStart = i
-            active = True
+
         elif diff == -1:
-            # New pause begins
+            # Active Time endet → hier auswerten
+            segment = measData[indStart:i]
+            # Peak
+            local_peak = np.max(segment)
+            local_peak_idx = np.argmax(segment)
+            allPeaks.append(local_peak)
+            allPeaks_timepoint.append(t[indStart + local_peak_idx])
 
-            #max. power
-            peak = np.max(measData[indStart:indStart+ctr]) 
-            peak_timepoint = t[np.argmax(measData[indStart:indStart+ctr])]
-            allPeaks.append(peak)
-            allPeaks_timepoint.append(peak_timepoint)
+            # Start-Zeitpunkt
+            sp_val, sp_time = analyse_measurements(segment, sampling_rate=sampleRate)
+            allStartingpoints.append(sp_val)
+            sp_time_abs = indStart/sampleRate + sp_time
+            allStartingpoints_timepoint.append(round(sp_time_abs, 2))
 
-
-            #start pulling point
-            startpointpullingvalue, startpointpulling_timepoint = analyse_measurements(measData[indStart:indStart+ctr])
-            allStartingpoints_timepoint.append(startpointpulling_timepoint)
-            allStartingpoints.append(startpointpullingvalue)
-
-            ctr = 0
-            active = False
-        
-        # Nothing changed
-        if active:
-            ctr += 1
-
-    return allPeaks, allPeaks_timepoint, allStartingpoints, allStartingpoints_timepoint, max_acceleration, RFD
+    return allPeaks, allPeaks_timepoint, allStartingpoints, \
+           allStartingpoints_timepoint, max_acceleration, rfd_value
