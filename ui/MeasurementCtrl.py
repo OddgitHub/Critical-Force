@@ -346,17 +346,17 @@ class MeasurementCtrl(QWidget):
             peaks1, tp1, starts1, tsp1, acc_1, rfd_1 = computeSchnellkraftParameter(measDataPercentBw_1, self.lookupTable, self.fsMeas, self.bodyWeight)
             peaks2, tp2, starts2, tsp2, acc_2, rfd_2 = computeSchnellkraftParameter(measDataPercentBw_2, self.lookupTable, self.fsMeas, self.bodyWeight)
 
-            self.speedtestUi.graphicsView_2.plot(tp1, peaks1,pen=None, symbol='o', symbolBrush=(0,0,255),name="max Power 1 =" + str(np.round(peaks1, 2)) + "kg")
-            self.speedtestUi.graphicsView.plot(tp2, peaks2,pen=None, symbol='o', symbolBrush=(0,0,255),name="max Power 2 =" + str(np.round(peaks2,2)) + "kg")
+            self.speedtestUi.graphicsView_2.plot(tp1, peaks1,pen=None, symbol='o', symbolBrush=(0,0,255),name="max Power 1 ="+ str(np.round(peaks1, 2)) + " kg") 
+            self.speedtestUi.graphicsView.plot(tp2, peaks2,pen=None, symbol='o', symbolBrush=(0,0,255),name="max Power 2 ="+ str(np.round(peaks2,2)) + " kg")
 
-            self.speedtestUi.graphicsView_2.plot(tsp1, starts1,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 1 =" + str(np.round(starts1, 2)) + "kg")
-            self.speedtestUi.graphicsView.plot(tsp2, starts2,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 2 =" + str(np.round(starts2, 2)) + "kg")
+            self.speedtestUi.graphicsView_2.plot(tsp1, starts1,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 1 ="+ str(np.round(starts1, 2)) + " kg")
+            self.speedtestUi.graphicsView.plot(tsp2, starts2,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 2 ="+ str(np.round(starts2, 2)) + " kg")
 
             self.speedtestUi.graphicsView_2.plot([0], [0], pen=None, symbol=None, name="Max. Acceleration = "  + str(acc_1) + " m/s²")
             self.speedtestUi.graphicsView.plot([0], [0], pen=None, symbol=None, name="Max. Acceleration = "  + str(acc_2) + " m/s²")
             
-            self.speedtestUi.graphicsView_2.plot([0], [0], pen=None, symbol=None, name="RFD = "  + str(np.around(rfd_1, 2)) + " kg/s")
-            self.speedtestUi.graphicsView.plot([0], [0], pen=None, symbol=None, name="RFD = "  + str(np.around(rfd_2), 2) + " kg/s")
+            self.speedtestUi.graphicsView_2.plot([0], [0], pen=None, symbol=None, name="RFD = "  + str(round(rfd_1, 2)) + " kg/s")
+            self.speedtestUi.graphicsView.plot([0], [0], pen=None, symbol=None, name="RFD = "  + str(round(rfd_2, 2)) + " kg/s")
                 
         #=============================
 

@@ -78,7 +78,7 @@ def computeSchnellkraftParameter(measData, lookupTable, sampleRate, bodyweight):
             sp_val, sp_time = analyse_measurements(segment, sampling_rate=sampleRate)
             allStartingpoints.append(sp_val)
             sp_time_abs = indStart/sampleRate + sp_time
-            allStartingpoints_timepoint.append(round(sp_time_abs, 2))
+            allStartingpoints_timepoint.append(sp_time_abs)
 
     return allPeaks, allPeaks_timepoint, allStartingpoints, \
            allStartingpoints_timepoint, max_acceleration, rfd_value

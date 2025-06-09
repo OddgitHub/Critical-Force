@@ -97,7 +97,7 @@ class CalibrationMode:
 
     INTERNAL = 0x0  # Offset Calibration Internal; _CTRL2[1:0] = 0 (chip default)
     OFFSET = 0x2  # Offset Calibration System;   _CTRL2[1:0] = 2
-    GAIN = 0x3  # Gain   Calibration System;   _CTRL2[1:0] = 3
+    GAIN = 0x3  # Gain   Calibration System;   _CTRL2[1:0] = 3 
 
 
 class NAU7802:
@@ -116,7 +116,7 @@ class NAU7802:
         self.ldo_voltage = "3V0"  # 3.0-volt internal analog power (AVDD)
         self._pu_ldo_source = True  # Internal analog power (AVDD)
         self.gain = 128  # X128
-        self._c2_conv_rate = ConversionRate.RATE_80SPS  # 10 SPS; default
+        self._c2_conv_rate = ConversionRate.RATE_10SPS  # 10 SPS; default
         self._adc_chop_clock = 0x3  # 0x3 = Disable ADC chopper clock
         self._pga_ldo_mode = 0x0  # 0x0 = Use low ESR capacitors
         self._act_channels = active_channels
