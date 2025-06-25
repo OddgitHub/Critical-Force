@@ -332,7 +332,7 @@ class MeasurementCtrl(QWidget):
             if not self.speedtestWindow.isVisible():
                 self.speedtestWindow.show()
 
-            self.speedtestUi.graphicsView.clear()
+            self.speedtestUi.graphicsView.clear() 
             self.speedtestUi.graphicsView_2.clear()
 
             #showing new Data
@@ -349,8 +349,8 @@ class MeasurementCtrl(QWidget):
             self.speedtestUi.graphicsView_2.plot(tp1, peaks1,pen=None, symbol='o', symbolBrush=(0,0,255),name="max Power 1 ="+ str(np.round(peaks1, 2)) + " kg") 
             self.speedtestUi.graphicsView.plot(tp2, peaks2,pen=None, symbol='o', symbolBrush=(0,0,255),name="max Power 2 ="+ str(np.round(peaks2,2)) + " kg")
 
-            self.speedtestUi.graphicsView_2.plot(tsp1, starts1,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 1 ="+ str(np.round(starts1, 2)) + " kg")
-            self.speedtestUi.graphicsView.plot(tsp2, starts2,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 2 ="+ str(np.round(starts2, 2)) + " kg")
+            self.speedtestUi.graphicsView_2.plot(tsp1, starts1,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 1 ="+ str(np.round(starts1, 2)) + " %")
+            self.speedtestUi.graphicsView.plot(tsp2, starts2,pen=None, symbol='o', symbolBrush=(0,255,0),name="Start pullingpoint 2 ="+ str(np.round(starts2, 2)) + " %")
 
             self.speedtestUi.graphicsView_2.plot([0], [0], pen=None, symbol=None, name="Max. Acceleration = "  + str(acc_1) + " m/s²")
             self.speedtestUi.graphicsView.plot([0], [0], pen=None, symbol=None, name="Max. Acceleration = "  + str(acc_2) + " m/s²")
