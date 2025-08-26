@@ -97,7 +97,7 @@ class CalibrationMode:
 
     INTERNAL = 0x0  # Offset Calibration Internal; _CTRL2[1:0] = 0 (chip default)
     OFFSET = 0x2  # Offset Calibration System;   _CTRL2[1:0] = 2
-    GAIN = 0x3  # Gain   Calibration System;   _CTRL2[1:0] = 3
+    GAIN = 0x3  # Gain   Calibration System;   _CTRL2[1:0] = 3 
 
 
 class NAU7802:

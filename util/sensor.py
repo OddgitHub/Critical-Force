@@ -31,7 +31,8 @@ from util.params import Params
 #========================================
 class WeightSensor():
     def __init__(self):
-        self.sensorValue = 0
+        self.sensorValue_1 = 0
+        self.sensorValue_2 = 0
         self.scalingFactor = self.calcScalingFactor(Params.calibrationFile.value)
 
         # Set environment variable for MCP2221A
@@ -44,12 +45,22 @@ class WeightSensor():
         try:
             import board
             from util.cedargrove_nau7802 import NAU7802
+            from adafruit_tca9548a import TCA9548A
+
+            #Multiplexer initialisieren
+            multiplexer = TCA9548A(board.I2C())
 
             # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
-            self.nau7802 = NAU7802(board.I2C(), address=0x2A, active_channels=2)
-            self.nau7802.enable(True)
-            self.nau7802.channel = 1
+            self.nau7802_1 = NAU7802(multiplexer[0], address=0x2A, active_channels=2)
+            self.nau7802_1.enable(True)
+            self.nau7802_1.channel = 1
             self.zero_channel()
+
+            #2.Wägezelle
+            self.nau7802_2 = NAU7802(multiplexer[1], address=0x2A, active_channels=2)
+            self.nau7802_2.enable(True)
+            self.nau7802_2.channel = 1
+            self.zero_channel_2()
 
             self.connected = True
 
@@ -70,10 +81,12 @@ class WeightSensor():
             if stopEvent.is_set():
                 stopEvent.clear()
                 break
-            elif self.connected and self.nau7802.available:
-                self.sensorValue = self.nau7802.read()
+            elif self.connected and self.nau7802_1.available and self.nau7802_2.available:
+                self.sensorValue_1 = self.nau7802_1.read()
+                self.sensorValue_2 = self.nau7802_2.read()
             else:
-                self.sensorValue = 0
+                self.sensorValue_1 = 0
+                self.sensorValue_2 = 0
             time.sleep(0.001)
 
     def zero_channel(self):
@@ -84,20 +97,41 @@ class WeightSensor():
         msg = QMessageBox()
         msg.setWindowTitle("Warning")
         msg.setIcon(QMessageBox.Warning)
-        msg.setText("Checking sensor...\nRemove any weight, then click \"OK\" to proceed.")
+        msg.setText("Checking sensor 1 ...\nRemove any weight, then click \"OK\" to proceed.")
         msg.exec_()
 
-        self.nau7802.calibrate("INTERNAL")
-        self.nau7802.calibrate("OFFSET")
+        self.nau7802_1.calibrate("INTERNAL")
+        self.nau7802_1.calibrate("OFFSET")
 
         for _ in range(100):
-            self.nau7802.read()  # Read 100 samples to establish zero offset
+            self.nau7802_1.read()  # Read 100 samples to establish zero offset
+            
+    def zero_channel_2(self):
+        """Initiate internal calibration for current channel; return raw zero
+        offset value. Use when scale is started, a new channel is selected, or to
+        adjust for measurement drift. Remove weight and tare from load cell before
+        executing."""
+        msg = QMessageBox()
+        msg.setWindowTitle("Warning")
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText("Checking sensor 2 ...\nRemove any weight, then click \"OK\" to proceed.")
+        msg.exec_()
 
-    def getValueInKg(self):
-        return self.sensorValue * self.scalingFactor
+        self.nau7802_2.calibrate("INTERNAL")
+        self.nau7802_2.calibrate("OFFSET")
 
-    def getRawValue(self):
-        return self.sensorValue
+        for _ in range(100):  
+            self.nau7802_2.read() # Read 100 samples to establish zero offset
+
+    def getValueInKg_1(self):
+        return self.sensorValue_1 * self.scalingFactor
+    def getValueInKg_2(self):
+        return self.sensorValue_2 * self.scalingFactor
+
+    def getRawValue_1(self):
+        return self.sensorValue_1
+    def getRawValue_2(self):
+        return self.sensorValue_2
 
     def isConnected(self):
         return self.connected
